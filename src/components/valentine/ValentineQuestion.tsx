@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
+import confetti from 'canvas-confetti';
 
 interface ValentineQuestionProps {
   onYesClick: () => void;
@@ -15,6 +16,8 @@ const noButtonMessages = [
   "Nice try! 😎",
   "Almost! 🤭",
   "Keep trying! 💪",
+  "Whoops! 🙈",
+  "Not today! 😝",
 ];
 
 const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
@@ -25,8 +28,20 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
   const [showMessage, setShowMessage] = useState(false);
   const [showDoubleYes, setShowDoubleYes] = useState(false);
 
-  const yesScale = Math.min(1 + escapeCount * 0.15, 2);
-  const noScale = Math.max(1 - escapeCount * 0.1, 0.5);
+  const yesScale = Math.min(1 + escapeCount * 0.18, 2.2);
+  const noScale = Math.max(1 - escapeCount * 0.12, 0.4);
+
+  // Mini confetti burst when No escapes
+  const burstConfetti = useCallback(() => {
+    confetti({
+      particleCount: 15,
+      spread: 40,
+      origin: { x: 0.5, y: 0.5 },
+      colors: ['#ff6b8a', '#ff1744', '#ffc1e3'],
+      scalar: 0.6,
+      gravity: 0.8,
+    });
+  }, []);
 
   const moveNoButton = useCallback(() => {
     const maxX = window.innerWidth - 150;
@@ -43,12 +58,21 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
     setCurrentMessage(randomMessage);
     setShowMessage(true);
     
-    setTimeout(() => setShowMessage(false), 1000);
-  }, []);
+    burstConfetti();
+    
+    setTimeout(() => setShowMessage(false), 1200);
+  }, [burstConfetti]);
 
   useEffect(() => {
     if (escapeCount >= 5) {
       setShowDoubleYes(true);
+      // Celebration confetti when both yes buttons appear
+      confetti({
+        particleCount: 50,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff6b8a', '#ff1744', '#ff8a65', '#ffc1e3'],
+      });
     }
   }, [escapeCount]);
 
@@ -60,15 +84,20 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
     <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
       {/* Main Question */}
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, type: "spring", bounce: 0.5 }}
+        initial={{ opacity: 0, y: -50, scale: 0.8 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 1, type: "spring", bounce: 0.6 }}
         className="text-center mb-12"
       >
         <motion.h1
-          className="font-romantic text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-primary mb-4"
+          className="font-romantic text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-primary mb-4 drop-shadow-lg"
           animate={{ 
-            scale: [1, 1.02, 1],
+            scale: [1, 1.03, 1],
+            textShadow: [
+              "0 0 20px rgba(255,107,138,0.5)",
+              "0 0 40px rgba(255,107,138,0.8)",
+              "0 0 20px rgba(255,107,138,0.5)",
+            ],
           }}
           transition={{ 
             duration: 2, 
@@ -81,8 +110,9 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
         <motion.div
           className="text-5xl sm:text-6xl"
           animate={{ 
-            scale: [1, 1.2, 1],
-            rotate: [0, 5, -5, 0]
+            scale: [1, 1.3, 1],
+            rotate: [0, 10, -10, 5, -5, 0],
+            y: [0, -10, 0],
           }}
           transition={{ 
             duration: 1.5, 
@@ -98,12 +128,17 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
       <AnimatePresence>
         {showMessage && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.5, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.5, y: -20 }}
-            className="fixed top-1/4 left-1/2 transform -translate-x-1/2 bg-card text-card-foreground px-6 py-3 rounded-full shadow-valentine text-xl font-bold z-50"
+            initial={{ opacity: 0, scale: 0, rotate: -10 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: -30, rotate: 10 }}
+            className="fixed top-1/4 left-1/2 transform -translate-x-1/2 bg-card text-card-foreground px-8 py-4 rounded-2xl shadow-valentine text-2xl font-bold z-50 border-2 border-primary/20"
           >
-            {currentMessage}
+            <motion.span
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 0.3, repeat: 3 }}
+            >
+              {currentMessage}
+            </motion.span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -115,33 +150,36 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
             {/* Yes Button */}
             <motion.button
               onClick={onYesClick}
-              className="bg-valentine-gradient text-primary-foreground font-bold py-4 px-10 rounded-full shadow-valentine glow-valentine"
+              className="bg-valentine-gradient text-primary-foreground font-bold py-4 px-10 rounded-full shadow-valentine relative overflow-hidden"
               initial={{ scale: 1 }}
               animate={{ 
                 scale: yesScale,
+                boxShadow: `0 0 ${20 + escapeCount * 8}px hsl(var(--primary) / ${0.4 + escapeCount * 0.08})`,
               }}
               whileHover={{ scale: yesScale * 1.1 }}
               whileTap={{ scale: yesScale * 0.95 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              style={{
-                boxShadow: escapeCount > 2 
-                  ? `0 0 ${30 + escapeCount * 10}px hsl(var(--primary) / ${0.4 + escapeCount * 0.1})`
-                  : undefined
-              }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
             >
-              <span className="text-xl sm:text-2xl">Yes 💖</span>
+              {/* Shimmer effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+              />
+              <span className="text-xl sm:text-2xl relative z-10">Yes 💖</span>
             </motion.button>
 
             {/* No Button */}
             <motion.button
-              className="bg-muted text-muted-foreground font-bold py-3 px-8 rounded-full"
+              className="bg-muted text-muted-foreground font-bold py-3 px-8 rounded-full relative"
               animate={{ 
                 x: noPosition.x, 
                 y: noPosition.y,
                 scale: noScale,
-                opacity: noScale,
+                opacity: Math.max(noScale, 0.5),
+                rotate: escapeCount * 5,
               }}
-              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
               onMouseEnter={!isMobile ? handleNoInteraction : undefined}
               onClick={isMobile ? handleNoInteraction : undefined}
               whileHover={!isMobile ? {} : undefined}
@@ -159,23 +197,43 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
           >
             <motion.button
               onClick={onYesClick}
-              className="bg-valentine-gradient text-primary-foreground font-bold py-5 px-12 rounded-full shadow-valentine animate-pulse-glow"
-              whileHover={{ scale: 1.1 }}
+              className="bg-valentine-gradient text-primary-foreground font-bold py-6 px-14 rounded-full shadow-valentine relative overflow-hidden"
+              whileHover={{ scale: 1.1, rotate: -2 }}
               whileTap={{ scale: 0.95 }}
+              animate={{
+                boxShadow: [
+                  "0 0 30px hsl(var(--primary) / 0.5)",
+                  "0 0 50px hsl(var(--primary) / 0.8)",
+                  "0 0 30px hsl(var(--primary) / 0.5)",
+                ],
+              }}
+              transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <span className="text-2xl sm:text-3xl">Yes 💖</span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+              <span className="text-2xl sm:text-3xl relative z-10">Yes 💖</span>
             </motion.button>
             
             <motion.button
               onClick={onYesClick}
-              className="bg-valentine-gradient text-primary-foreground font-bold py-5 px-12 rounded-full shadow-valentine animate-pulse-glow"
-              initial={{ rotate: -5 }}
-              animate={{ rotate: [5, -5, 5] }}
-              transition={{ duration: 1, repeat: Infinity }}
-              whileHover={{ scale: 1.1 }}
+              className="bg-valentine-gradient text-primary-foreground font-bold py-6 px-14 rounded-full shadow-valentine relative overflow-hidden"
+              animate={{ 
+                rotate: [3, -3, 3],
+                y: [0, -5, 0],
+              }}
+              transition={{ duration: 0.8, repeat: Infinity }}
+              whileHover={{ scale: 1.1, rotate: 2 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="text-2xl sm:text-3xl">Absolutely Yes! 💕</span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
+              />
+              <span className="text-2xl sm:text-3xl relative z-10">Absolutely Yes! 💕</span>
             </motion.button>
           </motion.div>
         )}
@@ -184,22 +242,43 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
       {/* Hint text */}
       {escapeCount > 0 && escapeCount < 5 && (
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-8 text-muted-foreground text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8 text-foreground text-center font-medium"
         >
-          The Yes button is getting bigger... just saying! 😏
+          <motion.span
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 0.5, repeat: Infinity }}
+          >
+            The Yes button is getting bigger... just saying! 😏
+          </motion.span>
         </motion.p>
       )}
 
       {showDoubleYes && (
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-8 text-foreground text-xl text-center font-medium"
+          className="mt-8 text-center"
         >
-          There's no escape now! 🥰
-        </motion.p>
+          <motion.p 
+            className="text-foreground text-xl font-medium"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+          >
+            There's no escape now! 🥰
+          </motion.p>
+          <motion.div
+            className="text-3xl mt-2"
+            animate={{ 
+              rotate: [0, 10, -10, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            💘
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );
