@@ -2,10 +2,16 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
-const CelebrationScreen = () => {
+interface CelebrationScreenProps {
+  recipientName?: string;
+}
+
+const CelebrationScreen = ({ recipientName }: CelebrationScreenProps) => {
   const [showCelebration, setShowCelebration] = useState(true);
   const [showMessage, setShowMessage] = useState(false);
   const [showContact, setShowContact] = useState(false);
+
+  const displayName = recipientName || "you";
 
   useEffect(() => {
     // Epic confetti celebration
@@ -132,7 +138,7 @@ const CelebrationScreen = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              I knew you'd say yes! 💖
+              I knew {displayName === "you" ? "you" : recipientName} would say yes! 💖
             </motion.p>
             <motion.div
               className="flex justify-center gap-4 mt-6 text-4xl"
@@ -188,7 +194,7 @@ const CelebrationScreen = () => {
               }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              You Just Made Someone's Day!
+              {recipientName ? `${recipientName}, You're Amazing!` : "You Just Made Someone's Day!"}
             </motion.h2>
             <motion.p 
               className="text-lg sm:text-xl text-foreground mb-4 leading-relaxed"
@@ -196,7 +202,7 @@ const CelebrationScreen = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              Love is in the air, and you just made this moment magical! 
+              Love is in the air, and {displayName === "you" ? "you" : recipientName} just made this moment magical! 
               Whether it's your first Valentine together or your 50th, 
               may your day be filled with love, laughter, and endless joy. 💖
             </motion.p>
@@ -205,7 +211,7 @@ const CelebrationScreen = () => {
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              Happy Valentine's Day! 🌹
+              Happy Valentine's Day{recipientName ? `, ${recipientName}` : ""}! 🌹
             </motion.p>
             
             {/* Floating hearts around message */}

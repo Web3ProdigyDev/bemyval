@@ -5,6 +5,7 @@ import confetti from 'canvas-confetti';
 
 interface ValentineQuestionProps {
   onYesClick: () => void;
+  recipientName?: string;
 }
 
 const noButtonMessages = [
@@ -20,7 +21,7 @@ const noButtonMessages = [
   "Not today! 😝",
 ];
 
-const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
+const ValentineQuestion = ({ onYesClick, recipientName }: ValentineQuestionProps) => {
   const isMobile = useIsMobile();
   const [noPosition, setNoPosition] = useState({ x: 0, y: 0 });
   const [escapeCount, setEscapeCount] = useState(0);
@@ -30,6 +31,8 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
 
   const yesScale = Math.min(1 + escapeCount * 0.18, 2.2);
   const noScale = Math.max(1 - escapeCount * 0.12, 0.4);
+
+  const displayName = recipientName || "You";
 
   // Mini confetti burst when No escapes
   const burstConfetti = useCallback(() => {
@@ -82,6 +85,24 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
 
   return (
     <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+      {/* Personalized greeting */}
+      {recipientName && (
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-4"
+        >
+          <motion.p
+            className="text-xl sm:text-2xl text-foreground font-medium"
+            animate={{ opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            Hey <span className="text-primary font-bold">{recipientName}</span>! 👋
+          </motion.p>
+        </motion.div>
+      )}
+
       {/* Main Question */}
       <motion.div
         initial={{ opacity: 0, y: -50, scale: 0.8 }}
@@ -105,7 +126,11 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
             ease: "easeInOut"
           }}
         >
-          Will You Be My Valentine?
+          {recipientName ? (
+            <>Will {recipientName} Be My Valentine?</>
+          ) : (
+            <>Will You Be My Valentine?</>
+          )}
         </motion.h1>
         <motion.div
           className="text-5xl sm:text-6xl"
@@ -266,7 +291,7 @@ const ValentineQuestion = ({ onYesClick }: ValentineQuestionProps) => {
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 1, repeat: Infinity }}
           >
-            There's no escape now! 🥰
+            There's no escape now, {displayName}! 🥰
           </motion.p>
           <motion.div
             className="text-3xl mt-2"
