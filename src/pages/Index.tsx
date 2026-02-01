@@ -1,25 +1,39 @@
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import FloatingHearts from '@/components/valentine/FloatingHearts';
+import VisitorForm from '@/components/valentine/VisitorForm';
 import ValentineQuestion from '@/components/valentine/ValentineQuestion';
 import CelebrationScreen from '@/components/valentine/CelebrationScreen';
+import BackgroundMusic from '@/components/valentine/BackgroundMusic';
+
+type Screen = 'form' | 'question' | 'celebration';
 
 const Index = () => {
-  const [accepted, setAccepted] = useState(false);
+  const [currentScreen, setCurrentScreen] = useState<Screen>('form');
 
   return (
     <div className="min-h-screen bg-blush-gradient overflow-hidden relative">
+      {/* Background Music */}
+      <BackgroundMusic />
+
       {/* Floating Hearts Background */}
       <FloatingHearts />
 
       {/* Main Content */}
       <AnimatePresence mode="wait">
-        {!accepted ? (
+        {currentScreen === 'form' && (
+          <VisitorForm 
+            key="form"
+            onComplete={() => setCurrentScreen('question')} 
+          />
+        )}
+        {currentScreen === 'question' && (
           <ValentineQuestion 
             key="question"
-            onYesClick={() => setAccepted(true)} 
+            onYesClick={() => setCurrentScreen('celebration')} 
           />
-        ) : (
+        )}
+        {currentScreen === 'celebration' && (
           <CelebrationScreen key="celebration" />
         )}
       </AnimatePresence>
