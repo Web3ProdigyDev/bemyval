@@ -7,6 +7,7 @@ interface ValentineQuestionProps {
   onYesClick: () => void;
   recipientName?: string;
   customMessage?: string;
+  senderName?: string;
 }
 
 const noButtonMessages = [
@@ -69,7 +70,7 @@ const playSuccessSound = () => {
   }
 };
 
-const ValentineQuestion = ({ onYesClick, recipientName, customMessage }: ValentineQuestionProps) => {
+const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderName }: ValentineQuestionProps) => {
   const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
   const [noPosition, setNoPosition] = useState({ x: 0, y: 0 });
@@ -164,12 +165,26 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage }: Valenti
         </motion.div>
       )}
 
+      {/* Sender Name */}
+      {senderName && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="text-center mb-2"
+        >
+          <p className="text-sm sm:text-base text-muted-foreground">
+            From <span className="text-primary font-semibold">{senderName}</span> 💌
+          </p>
+        </motion.div>
+      )}
+
       {/* Custom Message */}
       {customMessage && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.25 }}
           className="text-center mb-4 max-w-md"
         >
           <p className="text-base sm:text-lg text-foreground/80 italic">

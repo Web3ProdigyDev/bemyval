@@ -1,42 +1,47 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Share2 } from 'lucide-react';
 import FloatingHearts from '@/components/valentine/FloatingHearts';
-import VisitorForm from '@/components/valentine/VisitorForm';
+import GiftBoxScreen from '@/components/valentine/GiftBoxScreen';
+import EnvelopeScreen from '@/components/valentine/EnvelopeScreen';
 import ValentineQuestion from '@/components/valentine/ValentineQuestion';
 import CelebrationScreen from '@/components/valentine/CelebrationScreen';
-import BackgroundMusic from '@/components/valentine/BackgroundMusic';
+import BackgroundMusic, { BackgroundMusicHandle } from '@/components/valentine/BackgroundMusic';
 import ShareDialog from '@/components/valentine/ShareDialog';
 
-type Screen = 'form' | 'question' | 'celebration';
+type Screen = 'giftbox' | 'envelope' | 'question' | 'celebration';
 
 const Index = () => {
   const [searchParams] = useSearchParams();
-  const [currentScreen, setCurrentScreen] = useState<Screen>('form');
+  const [currentScreen, setCurrentScreen] = useState<Screen>('giftbox');
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showHearts, setShowHearts] = useState(false);
+  const musicRef = useRef<BackgroundMusicHandle>(null);
 
-  // Get recipient name and custom message from URL if present
+  // Get recipient name, custom message, and sender from URL if present
   const recipientName = searchParams.get('to') || undefined;
   const customMessage = searchParams.get('msg') || undefined;
+  const senderName = searchParams.get('from') || undefined;
 
-  // If there's a recipient name in URL, skip the form
-  useEffect(() => {
-    if (recipientName) {
-      setCurrentScreen('question');
-    }
-  }, [recipientName]);
+  // Start music when envelope opens
+  const handleMusicStart = () => {
+    musicRef.current?.play();
+    setShowHearts(true); // Show valentine hearts when music starts
+  };
 
   return (
-    <div className="min-h-screen bg-blush-gradient overflow-hidden relative">
-      {/* Background Music */}
-      <BackgroundMusic />
+    <div className={`min-h-screen overflow-hidden relative transition-colors duration-1000 ${
+      showHearts ? 'bg-blush-gradient' : 'bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100'
+    }`}>
+      {/* Background Music - controlled programmatically */}
+      <BackgroundMusic ref={musicRef} />
 
-      {/* Floating Hearts Background */}
-      <FloatingHearts />
+      {/* Floating Hearts Background - only show after envelope opens */}
+      {showHearts && <FloatingHearts />}
 
-      {/* Share Button - Only show when not on form */}
-      {currentScreen !== 'form' && !recipientName && (
+      {/* Share Button - Show on question and celebration screens */}
+      {(currentScreen === 'question' || currentScreen === 'celebration') && (
         <motion.button
           onClick={() => setShowShareDialog(true)}
           className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-card/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-full shadow-valentine border border-border hover:bg-card transition-colors flex items-center gap-2"
@@ -59,10 +64,18 @@ const Index = () => {
 
       {/* Main Content */}
       <AnimatePresence mode="wait">
-        {currentScreen === 'form' && !recipientName && (
-          <VisitorForm 
-            key="form"
-            onComplete={() => setCurrentScreen('question')} 
+        {currentScreen === 'giftbox' && (
+          <GiftBoxScreen 
+            key="giftbox"
+            onOpen={() => setCurrentScreen('envelope')} 
+          />
+        )}
+        {currentScreen === 'envelope' && (
+          <EnvelopeScreen 
+            key="envelope"
+            onOpen={() => setCurrentScreen('question')}
+            onMusicStart={handleMusicStart}
+            recipientName={recipientName}
           />
         )}
         {currentScreen === 'question' && (
@@ -71,6 +84,7 @@ const Index = () => {
             onYesClick={() => setCurrentScreen('celebration')}
             recipientName={recipientName}
             customMessage={customMessage}
+            senderName={senderName}
           />
         )}
         {currentScreen === 'celebration' && (
@@ -78,6 +92,7 @@ const Index = () => {
             key="celebration" 
             recipientName={recipientName}
             customMessage={customMessage}
+            senderName={senderName}
           />
         )}
       </AnimatePresence>

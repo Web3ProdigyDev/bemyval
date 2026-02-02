@@ -5,9 +5,10 @@ import confetti from 'canvas-confetti';
 interface CelebrationScreenProps {
   recipientName?: string;
   customMessage?: string;
+  senderName?: string;
 }
 
-const CelebrationScreen = ({ recipientName, customMessage }: CelebrationScreenProps) => {
+const CelebrationScreen = ({ recipientName, customMessage, senderName }: CelebrationScreenProps) => {
   const [showMessage, setShowMessage] = useState(false);
   const [showContact, setShowContact] = useState(false);
 
@@ -135,6 +136,20 @@ const CelebrationScreen = ({ recipientName, customMessage }: CelebrationScreenPr
             >
               Happy Valentine's Day{recipientName ? `, ${recipientName}` : ""}! 🌹
             </motion.p>
+
+            {/* Sender reveal */}
+            {senderName && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-4 pt-4 border-t border-primary/20"
+              >
+                <p className="text-base text-foreground">
+                  With love from <span className="text-primary font-bold">{senderName}</span> 💝
+                </p>
+              </motion.div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
