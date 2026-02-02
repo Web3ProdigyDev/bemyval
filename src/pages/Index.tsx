@@ -16,8 +16,9 @@ const Index = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('form');
   const [showShareDialog, setShowShareDialog] = useState(false);
 
-  // Get recipient name from URL if present
+  // Get recipient name and custom message from URL if present
   const recipientName = searchParams.get('to') || undefined;
+  const customMessage = searchParams.get('msg') || undefined;
 
   // If there's a recipient name in URL, skip the form
   useEffect(() => {
@@ -38,15 +39,15 @@ const Index = () => {
       {currentScreen !== 'form' && !recipientName && (
         <motion.button
           onClick={() => setShowShareDialog(true)}
-          className="fixed top-6 right-6 z-50 bg-card/90 backdrop-blur-sm p-3 rounded-full shadow-valentine border border-border hover:bg-card transition-colors flex items-center gap-2"
+          className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-card/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-full shadow-valentine border border-border hover:bg-card transition-colors flex items-center gap-2"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Share2 className="w-5 h-5 text-primary" />
-          <span className="text-sm font-medium text-foreground pr-1">Share</span>
+          <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+          <span className="text-xs sm:text-sm font-medium text-foreground pr-1">Share</span>
         </motion.button>
       )}
 
@@ -69,12 +70,14 @@ const Index = () => {
             key="question"
             onYesClick={() => setCurrentScreen('celebration')}
             recipientName={recipientName}
+            customMessage={customMessage}
           />
         )}
         {currentScreen === 'celebration' && (
           <CelebrationScreen 
             key="celebration" 
             recipientName={recipientName}
+            customMessage={customMessage}
           />
         )}
       </AnimatePresence>

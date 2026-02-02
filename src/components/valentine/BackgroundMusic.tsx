@@ -12,7 +12,7 @@ const BackgroundMusic = () => {
     const handleInteraction = () => {
       if (!hasInteracted && audioRef.current) {
         setHasInteracted(true);
-        audioRef.current.volume = 0.25;
+        audioRef.current.volume = 0.3;
         audioRef.current.play()
           .then(() => setIsPlaying(true))
           .catch(() => {
@@ -21,7 +21,6 @@ const BackgroundMusic = () => {
       }
     };
 
-    // Try to play on any user interaction
     document.addEventListener('click', handleInteraction);
     document.addEventListener('touchstart', handleInteraction);
 
@@ -35,7 +34,7 @@ const BackgroundMusic = () => {
     if (audioRef.current) {
       if (!hasInteracted) {
         setHasInteracted(true);
-        audioRef.current.volume = 0.25;
+        audioRef.current.volume = 0.3;
         audioRef.current.play()
           .then(() => setIsPlaying(true))
           .catch(() => {});
@@ -47,15 +46,15 @@ const BackgroundMusic = () => {
 
   return (
     <>
-      {/* Background Music - Romantic track */}
+      {/* Background Music - User's uploaded audio */}
       <audio
         ref={audioRef}
         loop
         preload="auto"
-        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        src="/audio/bg-music.mp3"
       />
 
-      {/* Mute/Unmute Button - Responsive positioning */}
+      {/* Mute/Unmute Button */}
       <motion.button
         onClick={toggleMute}
         className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 bg-card/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-full shadow-valentine border border-border hover:bg-card transition-colors"
@@ -78,7 +77,7 @@ const BackgroundMusic = () => {
         )}
       </motion.button>
 
-      {/* Hint to enable sound - Responsive */}
+      {/* Hint to enable sound */}
       <AnimatePresence>
         {!hasInteracted && (
           <motion.div
@@ -86,7 +85,7 @@ const BackgroundMusic = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ delay: 2 }}
-            className="fixed bottom-4 right-14 sm:bottom-6 sm:right-20 z-50 bg-card/90 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-md text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5"
+            className="fixed bottom-4 right-14 sm:bottom-6 sm:right-20 z-50 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5"
           >
             <motion.span
               animate={{ rotate: [0, 10, -10, 0] }}
@@ -94,8 +93,7 @@ const BackgroundMusic = () => {
             >
               <Music className="w-3 h-3 sm:w-4 sm:h-4" />
             </motion.span>
-            <span className="hidden xs:inline">Tap for music</span>
-            <span className="xs:hidden">🎵</span>
+            <span>Tap for music 🎵</span>
           </motion.div>
         )}
       </AnimatePresence>
