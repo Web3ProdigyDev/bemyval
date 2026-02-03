@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { playEnvelopeOpenSound } from '@/lib/romanticSounds';
+import { getRandomItem, envelopeTitles, envelopeRevealTitles, letterPreviewTexts } from '@/lib/randomContent';
 
 interface EnvelopeScreenProps {
   onOpen: () => void;
@@ -7,40 +9,18 @@ interface EnvelopeScreenProps {
   recipientName?: string;
 }
 
-// Sound effect for envelope/paper opening
-const playPaperSound = () => {
-  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-  
-  const duration = 0.5;
-  const sampleRate = audioContext.sampleRate;
-  const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
-  const data = buffer.getChannelData(0);
-  
-  for (let i = 0; i < buffer.length; i++) {
-    const t = i / sampleRate;
-    // Paper tear/slide sound
-    const envelope = Math.exp(-t * 6) * (1 - Math.exp(-t * 80));
-    const noise = Math.random() * 2 - 1;
-    data[i] = noise * envelope * 0.25;
-  }
-  
-  const source = audioContext.createBufferSource();
-  source.buffer = buffer;
-  
-  const filter = audioContext.createBiquadFilter();
-  filter.type = 'highpass';
-  filter.frequency.value = 1500;
-  
-  source.connect(filter);
-  filter.connect(audioContext.destination);
-  source.start();
-};
-
 const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenProps) => {
   const [isOpening, setIsOpening] = useState(false);
   const [showLetter, setShowLetter] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showVolumeHint, setShowVolumeHint] = useState(true);
+
+  // Random content - memoized
+  const content = useMemo(() => ({
+    title: getRandomItem(envelopeTitles),
+    revealTitle: getRandomItem(envelopeRevealTitles),
+    letterPreview: getRandomItem(letterPreviewTexts),
+  }), []);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowHint(true), 1500);
@@ -52,8 +32,8 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
     setIsOpening(true);
     setShowVolumeHint(false);
     
-    // Play paper sound
-    playPaperSound();
+    // Play romantic envelope sound
+    playEnvelopeOpenSound();
     
     // Start music when envelope opens
     setTimeout(() => {
@@ -91,10 +71,10 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            💕 A Love Letter! 💕
+            {content.revealTitle}
           </motion.span>
         ) : (
-          "A special letter for you..."
+          content.title
         )}
       </motion.h1>
 
@@ -200,7 +180,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
                     }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >
-                    Will You Be My Valentine?
+                    {content.letterPreview}
                   </motion.p>
                   
                   <motion.div

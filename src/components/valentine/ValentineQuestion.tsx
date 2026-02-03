@@ -1,7 +1,17 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
 import confetti from 'canvas-confetti';
+import { playBounceSound, playSuccessSound } from '@/lib/romanticSounds';
+import { 
+  getRandomItem, 
+  noButtonMessages, 
+  mainQuestionTexts,
+  yesButtonTexts,
+  doubleYesTexts,
+  hintAfterEscapeTexts,
+  noEscapePhrases 
+} from '@/lib/randomContent';
 
 interface ValentineQuestionProps {
   onYesClick: () => void;
@@ -9,66 +19,6 @@ interface ValentineQuestionProps {
   customMessage?: string;
   senderName?: string;
 }
-
-const noButtonMessages = [
-  "Nope! 😜",
-  "Can't catch me! 💨",
-  "Try again! 😏",
-  "Too slow! 🏃",
-  "Hehe! 😂",
-  "Nice try! 😎",
-  "Almost! 🤭",
-  "Keep trying! 💪",
-  "Whoops! 🙈",
-  "Not today! 😝",
-];
-
-// Sound effects using Web Audio API
-const playBounceSound = () => {
-  try {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
-    
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.1);
-  } catch (e) {
-    // Audio not supported
-  }
-};
-
-const playSuccessSound = () => {
-  try {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const frequencies = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-    
-    frequencies.forEach((freq, i) => {
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(freq, audioContext.currentTime + i * 0.1);
-      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime + i * 0.1);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.3);
-      
-      oscillator.start(audioContext.currentTime + i * 0.1);
-      oscillator.stop(audioContext.currentTime + i * 0.1 + 0.3);
-    });
-  } catch (e) {
-    // Audio not supported
-  }
-};
 
 const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderName }: ValentineQuestionProps) => {
   const isMobile = useIsMobile();
@@ -78,6 +28,15 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
   const [currentMessage, setCurrentMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
   const [showDoubleYes, setShowDoubleYes] = useState(false);
+
+  // Random content - memoized
+  const content = useMemo(() => ({
+    mainQuestion: getRandomItem(mainQuestionTexts),
+    yesButton: getRandomItem(yesButtonTexts),
+    doubleYes: getRandomItem(doubleYesTexts),
+    hintText: getRandomItem(hintAfterEscapeTexts),
+    noEscape: getRandomItem(noEscapePhrases),
+  }), []);
 
   const yesScale = Math.min(1 + escapeCount * 0.15, 2);
   const noScale = Math.max(1 - escapeCount * 0.1, 0.5);
@@ -96,7 +55,6 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
   }, [onYesClick]);
 
   const moveNoButton = useCallback((e?: React.MouseEvent | React.TouchEvent) => {
-    // Prevent any default behavior
     e?.preventDefault();
     e?.stopPropagation();
 
@@ -106,7 +64,6 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
     const rect = container.getBoundingClientRect();
     const padding = isMobile ? 40 : 60;
     
-    // Calculate random position within container bounds
     const maxX = Math.min(rect.width / 2 - padding, 150);
     const maxY = Math.min(rect.height / 2 - padding, 100);
     
@@ -116,15 +73,12 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
     setNoPosition({ x: newX, y: newY });
     setEscapeCount((prev) => prev + 1);
     
-    // Play sound
     playBounceSound();
     
-    // Show funny message
-    const randomMessage = noButtonMessages[Math.floor(Math.random() * noButtonMessages.length)];
+    const randomMessage = getRandomItem(noButtonMessages);
     setCurrentMessage(randomMessage);
     setShowMessage(true);
     
-    // Small confetti burst
     confetti({
       particleCount: 8,
       spread: 30,
@@ -148,6 +102,11 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
       });
     }
   }, [escapeCount]);
+
+  // Build personalized question
+  const questionText = recipientName 
+    ? content.mainQuestion.replace(/You/gi, recipientName).replace(/My/gi, 'My')
+    : content.mainQuestion;
 
   return (
     <div ref={containerRef} className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8">
@@ -211,11 +170,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
             ease: "easeInOut"
           }}
         >
-          {recipientName ? (
-            <>Will {recipientName} Be My Valentine?</>
-          ) : (
-            <>Will You Be My Valentine?</>
-          )}
+          {questionText}
         </motion.h1>
         <motion.div
           className="text-4xl sm:text-5xl"
@@ -259,10 +214,10 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               whileHover={{ scale: yesScale * 1.08 }}
               whileTap={{ scale: yesScale * 0.95 }}
             >
-              <span className="text-lg sm:text-xl relative z-10">Yes 💖</span>
+              <span className="text-lg sm:text-xl relative z-10">{content.yesButton}</span>
             </motion.button>
 
-            {/* No Button - Fixed: no page refresh */}
+            {/* No Button */}
             <motion.button
               type="button"
               className="bg-muted text-muted-foreground font-bold py-2.5 px-6 rounded-full"
@@ -295,7 +250,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="text-xl relative z-10">Yes 💖</span>
+              <span className="text-xl relative z-10">{content.doubleYes[0]}</span>
             </motion.button>
             
             <motion.button
@@ -306,7 +261,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="text-xl relative z-10">Absolutely Yes! 💕</span>
+              <span className="text-xl relative z-10">{content.doubleYes[1]}</span>
             </motion.button>
           </motion.div>
         )}
@@ -319,7 +274,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
           animate={{ opacity: 1 }}
           className="mt-6 text-foreground text-center font-medium text-sm px-4"
         >
-          The Yes button is getting bigger... just saying! 😏
+          {content.hintText}
         </motion.p>
       )}
 
@@ -329,7 +284,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
           animate={{ opacity: 1 }}
           className="mt-6 text-foreground text-lg font-medium text-center"
         >
-          There's no escape now, {displayName}! 🥰
+          {content.noEscape.replace(/!/, `, ${displayName}!`)}
         </motion.p>
       )}
     </div>
