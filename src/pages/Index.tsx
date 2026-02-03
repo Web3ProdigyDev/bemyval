@@ -52,7 +52,7 @@ const Index = () => {
           whileTap={{ scale: 0.95 }}
         >
           <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-          <span className="text-xs sm:text-sm font-medium text-foreground pr-1">Share</span>
+          <span className="text-xs sm:text-sm font-medium text-foreground pr-1">Send Love</span>
         </motion.button>
       )}
 

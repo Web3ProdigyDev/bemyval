@@ -1,29 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface GiftBoxScreenProps {
   onOpen: () => void;
 }
 
+// Sound effect for gift box opening
+const playUnwrapSound = () => {
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  
+  // Create rustling/unwrap sound
+  const duration = 0.8;
+  const sampleRate = audioContext.sampleRate;
+  const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
+  const data = buffer.getChannelData(0);
+  
+  for (let i = 0; i < buffer.length; i++) {
+    const t = i / sampleRate;
+    // Crinkly paper sound with envelope
+    const envelope = Math.exp(-t * 4) * (1 - Math.exp(-t * 50));
+    data[i] = (Math.random() * 2 - 1) * envelope * 0.3;
+  }
+  
+  const source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  
+  const filter = audioContext.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = 2000;
+  filter.Q.value = 0.5;
+  
+  source.connect(filter);
+  filter.connect(audioContext.destination);
+  source.start();
+};
+
 const GiftBoxScreen = ({ onOpen }: GiftBoxScreenProps) => {
   const [isOpening, setIsOpening] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
   // Show hint after 2 seconds
-  useState(() => {
+  useEffect(() => {
     const timer = setTimeout(() => setShowHint(true), 2000);
     return () => clearTimeout(timer);
-  });
+  }, []);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     if (isOpening) return;
     setIsOpening(true);
+    
+    // Play unwrap sound
+    playUnwrapSound();
     
     // Wait for animation then proceed
     setTimeout(() => {
       onOpen();
     }, 1200);
-  };
+  }, [isOpening, onOpen]);
 
   return (
     <motion.div

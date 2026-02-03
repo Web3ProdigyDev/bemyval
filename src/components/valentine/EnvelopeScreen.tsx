@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface EnvelopeScreenProps {
@@ -7,19 +7,53 @@ interface EnvelopeScreenProps {
   recipientName?: string;
 }
 
+// Sound effect for envelope/paper opening
+const playPaperSound = () => {
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  
+  const duration = 0.5;
+  const sampleRate = audioContext.sampleRate;
+  const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
+  const data = buffer.getChannelData(0);
+  
+  for (let i = 0; i < buffer.length; i++) {
+    const t = i / sampleRate;
+    // Paper tear/slide sound
+    const envelope = Math.exp(-t * 6) * (1 - Math.exp(-t * 80));
+    const noise = Math.random() * 2 - 1;
+    data[i] = noise * envelope * 0.25;
+  }
+  
+  const source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  
+  const filter = audioContext.createBiquadFilter();
+  filter.type = 'highpass';
+  filter.frequency.value = 1500;
+  
+  source.connect(filter);
+  filter.connect(audioContext.destination);
+  source.start();
+};
+
 const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenProps) => {
   const [isOpening, setIsOpening] = useState(false);
   const [showLetter, setShowLetter] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const [showVolumeHint, setShowVolumeHint] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowHint(true), 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     if (isOpening) return;
     setIsOpening(true);
+    setShowVolumeHint(false);
+    
+    // Play paper sound
+    playPaperSound();
     
     // Start music when envelope opens
     setTimeout(() => {
@@ -35,7 +69,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
     setTimeout(() => {
       onOpen();
     }, 2500);
-  };
+  }, [isOpening, onMusicStart, onOpen]);
 
   return (
     <motion.div
@@ -199,6 +233,29 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
           </AnimatePresence>
         </motion.div>
       </motion.div>
+
+      {/* Volume hint */}
+      <AnimatePresence>
+        {showVolumeHint && !isOpening && (
+          <motion.div
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-border/50"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ delay: 0.5 }}
+          >
+            <p className="text-muted-foreground text-xs sm:text-sm flex items-center gap-2">
+              <motion.span
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                🔊
+              </motion.span>
+              Turn up your volume for the best experience
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Tap hint */}
       <AnimatePresence>
