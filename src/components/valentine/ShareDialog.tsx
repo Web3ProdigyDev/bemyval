@@ -9,6 +9,14 @@ interface ShareDialogProps {
   onClose: () => void;
 }
 
+// Published URL - use this for share links
+const PUBLISHED_URL = 'https://yoursurprise.lovable.app';
+
+// Simple encoding for URL params (makes link shorter and less obvious)
+const encodeParam = (str: string): string => {
+  return btoa(encodeURIComponent(str)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+};
+
 const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
   const [recipientName, setRecipientName] = useState('');
   const [customMessage, setCustomMessage] = useState('');
@@ -21,16 +29,17 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
 
   const generateShareLink = () => {
     if (!recipientName.trim()) return '';
-    const baseUrl = window.location.origin;
+    
+    // Use encoded, shorter params: r=recipient, m=message, s=sender
     const params = new URLSearchParams();
-    params.set('to', recipientName.trim());
+    params.set('r', encodeParam(recipientName.trim()));
     if (customMessage.trim()) {
-      params.set('msg', customMessage.trim());
+      params.set('m', encodeParam(customMessage.trim()));
     }
     if (!isAnonymous && senderName.trim()) {
-      params.set('from', senderName.trim());
+      params.set('s', encodeParam(senderName.trim()));
     }
-    return `${baseUrl}?${params.toString()}`;
+    return `${PUBLISHED_URL}?${params.toString()}`;
   };
 
   const shareLink = generateShareLink();
@@ -60,7 +69,6 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
       return true;
     } catch (error) {
       console.error('Error saving sender:', error);
-      // Continue anyway
       return true;
     }
   };
@@ -335,33 +343,6 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
             </motion.div>
           )}
 
-          {/* Link display */}
-          {shareLink && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-muted rounded-xl p-2.5 mb-3 flex items-center gap-2"
-            >
-              <input
-                type="text"
-                value={shareLink}
-                readOnly
-                className="flex-1 bg-transparent text-xs text-foreground truncate outline-none"
-              />
-              <button
-                onClick={copyToClipboard}
-                disabled={isSubmitting}
-                className="p-1.5 rounded-lg hover:bg-background transition-colors flex-shrink-0 disabled:opacity-50"
-              >
-                {copied ? (
-                  <Check className="w-4 h-4 text-green-500" />
-                ) : (
-                  <Copy className="w-4 h-4 text-muted-foreground" />
-                )}
-              </button>
-            </motion.div>
-          )}
-
           {/* Share buttons */}
           <div className="flex flex-col gap-2.5">
             <motion.button
@@ -386,6 +367,26 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
             >
               <Share2 className="w-4 h-4" />
               {isSubmitting ? 'Saving...' : 'Share Link'}
+            </motion.button>
+
+            <motion.button
+              onClick={copyToClipboard}
+              disabled={isSubmitting}
+              className="w-full bg-muted text-muted-foreground font-medium py-2 rounded-full flex items-center justify-center gap-2 text-sm disabled:opacity-50"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4 text-green-500" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  Copy Link
+                </>
+              )}
             </motion.button>
           </div>
         </motion.div>

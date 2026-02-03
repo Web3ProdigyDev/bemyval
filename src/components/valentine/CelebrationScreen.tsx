@@ -1,6 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import { MessageCircle, ExternalLink } from 'lucide-react';
+import { 
+  getRandomItem,
+  celebrationTitles,
+  celebrationSubtitles,
+  afterCelebrationTitles,
+  fallbackSubtitles,
+  loveMessages,
+  valentineClosings
+} from '@/lib/randomContent';
 
 interface CelebrationScreenProps {
   recipientName?: string;
@@ -14,8 +24,17 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
 
   const displayName = recipientName || "you";
 
+  // Random content - memoized
+  const content = useMemo(() => ({
+    celebrationTitle: getRandomItem(celebrationTitles),
+    celebrationSubtitle: getRandomItem(celebrationSubtitles),
+    afterTitle: getRandomItem(afterCelebrationTitles),
+    fallbackSubtitle: getRandomItem(fallbackSubtitles),
+    loveMessage: getRandomItem(loveMessages),
+    closing: getRandomItem(valentineClosings),
+  }), []);
+
   useEffect(() => {
-    // Initial celebration confetti
     const duration = 3000;
     const animationEnd = Date.now() + duration;
 
@@ -51,7 +70,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
     return () => clearInterval(interval);
   }, []);
 
-  const whatsappLink = `https://wa.me/2349019459804?text=${encodeURIComponent("Hi! I saw your Valentine's website and I'd love something similar! 💕")}`;
+  const whatsappLink = `https://wa.me/2349019459804?text=${encodeURIComponent("Hi Inspired Devs! I saw your Valentine's website and I'd love something similar for my special someone! 💕")}`;
 
   return (
     <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8 overflow-hidden">
@@ -77,7 +96,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 0.6, repeat: Infinity }}
             >
-              Yay!!!
+              {content.celebrationTitle}
             </motion.h1>
             <motion.p
               className="text-xl sm:text-2xl text-foreground font-medium"
@@ -85,7 +104,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              I knew {displayName === "you" ? "you" : recipientName} would say yes! 💖
+              {content.celebrationSubtitle.replace(/you/gi, displayName === "you" ? "you" : recipientName || "you")}
             </motion.p>
           </motion.div>
         )}
@@ -108,7 +127,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
             <motion.h2 
               className="font-romantic text-3xl sm:text-4xl text-primary mb-4"
             >
-              {recipientName ? `${recipientName}, You're Amazing!` : "You Just Made Someone's Day!"}
+              {recipientName ? `${recipientName}, ${content.afterTitle}` : content.fallbackSubtitle}
             </motion.h2>
 
             {/* Custom message display */}
@@ -129,12 +148,12 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              Love is in the air! May your day be filled with love, laughter, and endless joy. 💖
+              {content.loveMessage}
             </motion.p>
             <motion.p 
               className="text-xl sm:text-2xl text-primary font-semibold"
             >
-              Happy Valentine's Day{recipientName ? `, ${recipientName}` : ""}! 🌹
+              {content.closing}{recipientName ? `, ${recipientName}` : ""}
             </motion.p>
 
             {/* Sender reveal */}
@@ -154,32 +173,79 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
         )}
       </AnimatePresence>
 
-      {/* Contact Card */}
+      {/* Developer Credit Card - More visible but elegant */}
       <AnimatePresence>
         {showContact && (
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mt-8 text-center w-full px-4"
+            className="mt-10 w-full max-w-sm px-4"
           >
-            <motion.a
-              href="https://inspireddevs.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-4 max-w-xs mx-auto block hover:bg-card/90 transition-colors"
-              whileHover={{ scale: 1.01 }}
+            {/* Lovely message */}
+            <motion.p
+              className="text-center text-muted-foreground text-sm mb-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
             >
-              <p className="text-muted-foreground/60 text-[10px] mb-1">
-                crafted with 💕
+              ✨ Want to make someone's heart flutter too? ✨
+            </motion.p>
+
+            <motion.div
+              className="bg-gradient-to-br from-card via-card to-primary/5 backdrop-blur-sm border-2 border-primary/20 rounded-2xl p-5 shadow-lg"
+              whileHover={{ scale: 1.02, borderColor: 'hsl(var(--primary) / 0.4)' }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="text-center mb-4">
+                <p className="text-primary font-bold text-lg mb-1">
+                  Inspired Devs 💕
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  We craft magical digital experiences for love
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <motion.a
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-[#25D366] text-white font-semibold py-2.5 px-4 rounded-full text-sm hover:bg-[#1da851] transition-colors"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Chat on WhatsApp
+                </motion.a>
+
+                <motion.a
+                  href="https://inspireddevs.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-primary/10 text-primary font-semibold py-2.5 px-4 rounded-full text-sm hover:bg-primary/20 transition-colors"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Visit Our Website
+                </motion.a>
+              </div>
+
+              <p className="text-center text-muted-foreground/60 text-xs mt-3">
+                📞 +234 901 945 9804
               </p>
-              <p className="text-foreground/80 text-xs font-medium">
-                Inspired Devs
-              </p>
-              <p className="text-muted-foreground/50 text-[10px] mt-1">
-                inspireddevs.vercel.app
-              </p>
-            </motion.a>
+            </motion.div>
+
+            {/* Subtle credit */}
+            <motion.p
+              className="text-center text-muted-foreground/40 text-xs mt-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              crafted with 💕 by Inspired Devs
+            </motion.p>
           </motion.div>
         )}
       </AnimatePresence>
