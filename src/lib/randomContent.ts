@@ -1,76 +1,78 @@
 // 70+ random variations for dynamic content throughout the site
+// Personal, romantic, between two people - imperfect and human
 
 export const giftBoxTitles = [
   "You have a surprise! 🎁",
-  "Something special awaits! ✨",
-  "A mystery for you! 🎊",
-  "Unwrap your surprise! 🎁",
-  "Someone thought of you! 💫",
-  "A special delivery! 📦",
-  "Open me! 🎁",
+  "Something's waiting for you! ✨",
+  "A little mystery! 🎊",
+  "Unwrap this surprise! 🎁",
+  "I got something for you! 💫",
+  "Special delivery! 📦",
+  "Psst... open me! 🎁",
   "Surprise inside! ✨",
-  "Just for you! 🎊",
+  "This is just for you! 🎊",
   "Something magical awaits! 💫",
-  "A gift is waiting! 🎁",
-  "Can't wait to show you! ✨",
-  "You've got a surprise! 🎊",
-  "Something wonderful inside! 💫",
-  "Ready for magic? 🎁",
-  "A little something for you! ✨",
+  "A surprise is waiting! 🎁",
+  "Can't wait for you to see this! ✨",
+  "You've got something special! 🎊",
+  "Something wonderful is here! 💫",
+  "Ready for a surprise? 🎁",
+  "I made this for you! ✨",
   "Guess what's inside! 🎊",
-  "Your surprise is here! 💫",
+  "Your surprise arrived! 💫",
   "Time to unwrap! 🎁",
-  "Something sweet awaits! ✨"
+  "Something sweet is here! ✨"
 ];
 
 export const giftBoxSubtitles = [
-  "Someone sent you something special...",
+  "Go ahead, tap it...",
   "Tap to discover what's inside...",
-  "A secret message awaits...",
-  "Someone's thinking of you...",
+  "A surprise awaits you...",
+  "I've been waiting for this moment...",
   "Curiosity calling? Tap!",
   "What could it be?",
   "The suspense is real...",
   "You won't believe what's inside...",
-  "A little mystery for you...",
-  "Someone has something to say...",
+  "I hope you like surprises...",
+  "This took courage to send...",
   "Open to find out...",
-  "A heartfelt surprise awaits...",
-  "Someone cares about you...",
-  "Magic is just one tap away...",
+  "I've been nervous about this...",
+  "Just tap it already! 😊",
+  "One tap away from magic...",
   "Ready to be surprised?"
 ];
 
 export const envelopeTitles = [
-  "A letter for you...",
-  "Someone wrote to you... ✉️",
-  "A message awaits...",
-  "Words inside... ✉️",
-  "A letter just for you...",
-  "Something written for you...",
-  "A secret note inside... ✉️",
-  "Someone has something to say...",
-  "Open to read the message...",
-  "Words meant only for you...",
-  "A message from someone...",
-  "Inside: something for you... ✉️",
-  "A note written just for you...",
+  "You got mail...",
+  "I wrote you something... ✉️",
+  "A message for you...",
+  "Something inside for you... ✉️",
+  "I have something to say...",
+  "I wrote this for you...",
+  "A note just for you... ✉️",
+  "I've been meaning to tell you...",
+  "Open to read my message...",
+  "Words I wanted to share...",
+  "A little note from me...",
+  "Inside: my thoughts for you... ✉️",
+  "I hope this makes you smile...",
   "Open to discover..."
 ];
 
 export const envelopeRevealTitles = [
-  "✨ Open it! ✨",
+  "✨ Here goes nothing! ✨",
   "📖 Read on... 📖",
   "✉️ Here it is! ✉️",
   "💫 Just for you! 💫",
-  "✨ Revealed! ✨",
-  "📖 The message! 📖",
+  "✨ *deep breath* ✨",
+  "📖 My heart says... 📖",
   "✉️ Inside... ✉️",
   "💫 Surprise! 💫",
-  "✨ A note! ✨",
-  "📖 Discover... 📖"
+  "✨ Okay here it is! ✨",
+  "📖 The big question! 📖"
 ];
 
+// FIXED: Always "Will You Be My Valentine?"
 export const letterPreviewTexts = [
   "Will You Be My Valentine?",
   "Will You Be My Valentine?",
@@ -84,22 +86,18 @@ export const letterPreviewTexts = [
   "Will You Be My Valentine?"
 ];
 
+// FIXED: Always centered on "Will You Be My Valentine?"
 export const mainQuestionTexts = [
   "Will You Be My Valentine?",
-  "Be My Valentine?",
-  "Say Yes to My Heart?",
-  "Will You Be Mine?",
-  "My Heart Beats for You...",
-  "Will You Make My Day?",
-  "Can You Feel the Love?",
-  "My Heart Asks One Question...",
-  "Will You Light Up My Life?",
-  "Say Yes to Forever?",
-  "Be the One for Me?",
-  "Will You Complete My Heart?",
-  "My Soul Has One Request...",
-  "Will You Dance with My Heart?",
-  "Be My Special Someone?"
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?"
 ];
 
 export const noButtonMessages = [
@@ -143,33 +141,34 @@ export const hintAfterEscapeTexts = [
 
 export const noEscapePhrases = [
   "There's no escape now! 🥰",
-  "You can't run from love! 🥰",
+  "You can't run from me! 🥰",
   "Destiny has spoken! 🥰",
   "Love always wins! 🥰",
-  "The heart knows! 🥰",
+  "My heart knew! 🥰",
   "Caught you! 🥰",
-  "Game over, love wins! 🥰",
-  "Surrender to love! 🥰"
+  "Game over, I win! 🥰",
+  "Surrender to my love! 🥰"
 ];
 
+// FIXED: "Yay" only - but allow title variations that don't say "Yay"
 export const celebrationTitles = [
-  "Yay!!!", "Woohoo!!!", "Amazing!!!", "Incredible!!!",
-  "Fantastic!!!", "Wonderful!!!", "Perfect!!!", "Brilliant!!!",
-  "Yes! Yes! Yes!", "Dreams Come True!!!", "Love Wins!!!",
-  "Magical!!!", "Beautiful!!!", "Spectacular!!!"
+  "Yay!!!", "Yay!!!", "Yay!!!", "Yay!!!",
+  "Yay!!!", "Yay!!!", "Yay!!!", "Yay!!!",
+  "Yay!!!", "Yay!!!", "Yay!!!", "Yay!!!",
+  "Yay!!!", "Yay!!!"
 ];
 
 export const celebrationSubtitles = [
-  "I knew you would say yes! 💖",
-  "My heart is so happy! 💖",
-  "Best day ever! 💖",
-  "You made me the happiest! 💖",
-  "This is pure magic! 💖",
-  "Love is beautiful! 💖",
-  "Together is the best place! 💖",
-  "Hearts aligned! 💖",
-  "The perfect answer! 💖",
-  "Dreams do come true! 💖"
+  "I knew you'd say yes! 💖",
+  "My heart is doing backflips! 💖",
+  "Best. Day. Ever! 💖",
+  "You just made me so happy! 💖",
+  "This is everything I hoped for! 💖",
+  "I'm literally smiling so hard rn! 💖",
+  "We're really doing this! 💖",
+  "My heart is so full! 💖",
+  "That was the perfect answer! 💖",
+  "I can't stop smiling! 💖"
 ];
 
 export const afterCelebrationTitles = [
@@ -191,35 +190,35 @@ export const afterCelebrationTitles = [
 ];
 
 export const fallbackSubtitles = [
-  "You Just Made Someone's Day!",
-  "Love Is In The Air!",
-  "Hearts Are Dancing!",
-  "Pure Magic Happened!",
-  "Something Beautiful Began!",
-  "A Love Story Unfolds!",
-  "Happiness Overload!",
-  "Joy Is Everywhere!"
+  "You Just Made My Day!",
+  "My Heart Is So Full!",
+  "I'm On Cloud Nine!",
+  "Pure Magic Just Happened!",
+  "Something Beautiful Just Began!",
+  "Our Story Starts Here!",
+  "I'm So Happy Right Now!",
+  "This Moment Is Everything!"
 ];
 
 export const loveMessages = [
-  "Love is in the air! May your day be filled with love, laughter, and endless joy. 💖",
-  "You're the reason someone smiles today! Keep spreading love and happiness! 💖",
-  "May every moment be filled with warmth and affection! 💖",
-  "Love makes everything better, and you make love beautiful! 💖",
-  "The world is brighter because of love, and you make it shine! 💖",
-  "Hearts are dancing, love is in the air! 💖",
-  "You are loved more than words can say! 💖",
-  "Today is a celebration of love, and you're the star! 💖",
-  "May love surround you always! 💖",
-  "You deserve all the love in the world! 💖"
+  "Love is in the air, and you're the reason I'm smiling right now! 💖",
+  "You're the reason my heart skips a beat! Thank you for saying yes! 💖",
+  "Every moment with you feels like magic, and this is just the beginning! 💖",
+  "You make everything brighter, and I can't wait to make you smile! 💖",
+  "The world is better because you're in it, and even better now that we're together! 💖",
+  "My heart is dancing and it's all because of you! 💖",
+  "I can't believe you said yes! You've made me the happiest! 💖",
+  "Today is the start of something beautiful, and I'm so glad it's with you! 💖",
+  "You're my favorite person, and now it's official! 💖",
+  "I promise to make every moment count! Thank you for being my valentine! 💖"
 ];
 
 export const valentineClosings = [
   "Happy Valentine's Day! 🌹",
   "With all my love! 🌹",
   "Forever yours! 🌹",
-  "Love always wins! 🌹",
-  "Sealed with love! 🌹",
+  "Love wins today! 🌹",
+  "Sealed with a kiss! 🌹",
   "My heart is yours! 🌹",
   "To love and beyond! 🌹",
   "Today and always! 🌹"

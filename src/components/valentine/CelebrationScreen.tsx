@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Globe } from 'lucide-react';
 import {
   getRandomItem,
   celebrationTitles,
@@ -65,12 +65,12 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
     }, 200);
 
     setTimeout(() => setShowMessage(true), 2500);
-    setTimeout(() => setShowContact(true), 5000);
+    setTimeout(() => setShowContact(true), 6000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const whatsappLink = `https://wa.me/2349019459804?text=${encodeURIComponent("Hi Inspired Devs! I saw your Valentine's website and I'd love something similar for my special someone! 💕")}`;
+  const whatsappLink = `https://wa.me/2349019459804?text=${encodeURIComponent("Hi Inspired Devs! I saw your Valentine's website and I'd love something similar! 💕")}`;
 
   return (
     <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8 overflow-hidden">
@@ -173,37 +173,67 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
         )}
       </AnimatePresence>
 
-      {/* Developer Credit - Subtle footer */}
+      {/* Developer Credit - Very subtle, animated footer */}
       <AnimatePresence>
         {showContact && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="fixed bottom-4 left-1/2 -translate-x-1/2"
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ 
+              type: "spring",
+              stiffness: 150,
+              damping: 20,
+              duration: 0.6 
+            }}
+            className="fixed bottom-3 left-1/2 -translate-x-1/2"
           >
             <motion.div
-              className="flex items-center gap-3 bg-card/80 backdrop-blur-sm border border-border/30 rounded-full px-4 py-2 shadow-sm"
-              whileHover={{ scale: 1.02 }}
+              className="flex items-center gap-2.5 bg-card/60 backdrop-blur-sm border border-border/20 rounded-full px-3 py-1.5 shadow-sm"
+              whileHover={{ 
+                scale: 1.03, 
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                borderColor: "rgba(255, 107, 138, 0.2)"
+              }}
+              transition={{ duration: 0.2 }}
             >
-              <span className="text-muted-foreground/60 text-xs">made with ✨ by</span>
-              <a
+              <motion.span 
+                className="text-muted-foreground/50 text-[10px]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                ✨ by
+              </motion.span>
+              <motion.a
                 href="https://inspireddevs.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary/80 hover:text-primary text-xs font-medium transition-colors"
+                className="text-primary/60 hover:text-primary text-[10px] font-medium transition-colors"
+                whileHover={{ scale: 1.05 }}
               >
                 Inspired Devs
-              </a>
-              <span className="text-muted-foreground/30">•</span>
-              <a
+              </motion.a>
+              <motion.span 
+                className="text-muted-foreground/20"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                •
+              </motion.span>
+              <motion.a
                 href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#25D366]/80 hover:text-[#25D366] transition-colors"
+                className="text-[#25D366]/50 hover:text-[#25D366] transition-colors flex items-center"
+                whileHover={{ scale: 1.1 }}
+                initial={{ opacity: 0, x: -5 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
               >
-                <MessageCircle className="w-3.5 h-3.5" />
-              </a>
+                <MessageCircle className="w-3 h-3" />
+              </motion.a>
             </motion.div>
           </motion.div>
         )}
