@@ -1,8 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { MessageCircle, ExternalLink } from 'lucide-react';
-import { 
+import { MessageCircle } from 'lucide-react';
+import {
   getRandomItem,
   celebrationTitles,
   celebrationSubtitles,
@@ -173,79 +173,38 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
         )}
       </AnimatePresence>
 
-      {/* Developer Credit Card - More visible but elegant */}
+      {/* Developer Credit - Subtle footer */}
       <AnimatePresence>
         {showContact && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mt-10 w-full max-w-sm px-4"
+            transition={{ duration: 0.5 }}
+            className="fixed bottom-4 left-1/2 -translate-x-1/2"
           >
-            {/* Lovely message */}
-            <motion.p
-              className="text-center text-muted-foreground text-sm mb-3"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              ✨ Want to make someone's heart flutter too? ✨
-            </motion.p>
-
             <motion.div
-              className="bg-gradient-to-br from-card via-card to-primary/5 backdrop-blur-sm border-2 border-primary/20 rounded-2xl p-5 shadow-lg"
-              whileHover={{ scale: 1.02, borderColor: 'hsl(var(--primary) / 0.4)' }}
-              transition={{ duration: 0.2 }}
+              className="flex items-center gap-3 bg-card/80 backdrop-blur-sm border border-border/30 rounded-full px-4 py-2 shadow-sm"
+              whileHover={{ scale: 1.02 }}
             >
-              <div className="text-center mb-4">
-                <p className="text-primary font-bold text-lg mb-1">
-                  Inspired Devs 💕
-                </p>
-                <p className="text-muted-foreground text-sm">
-                  We craft magical digital experiences for love
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <motion.a
-                  href={whatsappLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-[#25D366] text-white font-semibold py-2.5 px-4 rounded-full text-sm hover:bg-[#1da851] transition-colors"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Chat on WhatsApp
-                </motion.a>
-
-                <motion.a
-                  href="https://inspireddevs.vercel.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-primary/10 text-primary font-semibold py-2.5 px-4 rounded-full text-sm hover:bg-primary/20 transition-colors"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Visit Our Website
-                </motion.a>
-              </div>
-
-              <p className="text-center text-muted-foreground/60 text-xs mt-3">
-                📞 +234 901 945 9804
-              </p>
+              <span className="text-muted-foreground/60 text-xs">made with ✨ by</span>
+              <a
+                href="https://inspireddevs.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary/80 hover:text-primary text-xs font-medium transition-colors"
+              >
+                Inspired Devs
+              </a>
+              <span className="text-muted-foreground/30">•</span>
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#25D366]/80 hover:text-[#25D366] transition-colors"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+              </a>
             </motion.div>
-
-            {/* Subtle credit */}
-            <motion.p
-              className="text-center text-muted-foreground/40 text-xs mt-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              crafted with 💕 by Inspired Devs
-            </motion.p>
           </motion.div>
         )}
       </AnimatePresence>
