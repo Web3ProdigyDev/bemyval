@@ -75,20 +75,24 @@ const Index = () => {
       {/* Floating Hearts Background - only show after envelope opens */}
       {showHearts && <FloatingHearts />}
 
-      {/* Share Button - top right corner */}
-      <motion.button
-        onClick={() => setShowShareDialog(true)}
-        className="fixed top-4 right-4 z-50 bg-valentine-gradient text-primary-foreground px-3 py-2 rounded-full shadow-valentine flex items-center gap-2 font-semibold text-sm"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <Send className="w-4 h-4" />
-        <span className="hidden sm:inline">Create Yours</span>
-        <Heart className="w-4 h-4 sm:hidden" />
-      </motion.button>
+      {/* Share Button - only shows on celebration screen */}
+      <AnimatePresence>
+        {currentScreen === 'celebration' && (
+          <motion.button
+            onClick={() => setShowShareDialog(true)}
+            className="fixed top-4 right-4 z-50 bg-valentine-gradient text-primary-foreground px-4 py-2 rounded-full shadow-valentine flex items-center gap-2 font-semibold text-sm"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ delay: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Send className="w-4 h-4" />
+            <span>Share the Love</span>
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* Share Dialog */}
       <ShareDialog 
