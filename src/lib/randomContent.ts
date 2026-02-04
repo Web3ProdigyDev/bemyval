@@ -42,47 +42,46 @@ export const giftBoxSubtitles = [
 ];
 
 export const envelopeTitles = [
-  "A special letter for you...",
+  "A letter for you...",
   "Someone wrote to you... ✉️",
-  "A heartfelt message awaits...",
-  "Words from the heart... 💌",
+  "A message awaits...",
+  "Words inside... ✉️",
   "A letter just for you...",
-  "Something written with love...",
+  "Something written for you...",
   "A secret note inside... ✉️",
   "Someone has something to say...",
   "Open to read the message...",
-  "A love letter awaits... 💌",
   "Words meant only for you...",
-  "A message from someone special...",
-  "Inside: something beautiful... ✉️",
+  "A message from someone...",
+  "Inside: something for you... ✉️",
   "A note written just for you...",
-  "Someone poured their heart out... 💌"
+  "Open to discover..."
 ];
 
 export const envelopeRevealTitles = [
-  "💕 A Love Letter! 💕",
-  "💖 From the Heart! 💖",
-  "💌 With All My Love! 💌",
-  "❤️ Just For You! ❤️",
-  "💕 Sealed with a Kiss! 💕",
-  "💖 Words of Love! 💖",
-  "💌 My Heart Speaks! 💌",
-  "❤️ Love in Words! ❤️",
-  "💕 A Heartfelt Note! 💕",
-  "💖 Pure Affection! 💖"
+  "✨ Open it! ✨",
+  "📖 Read on... 📖",
+  "✉️ Here it is! ✉️",
+  "💫 Just for you! 💫",
+  "✨ Revealed! ✨",
+  "📖 The message! 📖",
+  "✉️ Inside... ✉️",
+  "💫 Surprise! 💫",
+  "✨ A note! ✨",
+  "📖 Discover... 📖"
 ];
 
 export const letterPreviewTexts = [
   "Will You Be My Valentine?",
-  "Be My Valentine? 💕",
-  "Say Yes to Love?",
-  "Will You Be Mine?",
-  "My Heart Asks...",
-  "A Special Question...",
-  "Love is Calling...",
-  "Will You Say Yes?",
-  "My Heart Wonders...",
-  "A Valentine Question..."
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?",
+  "Will You Be My Valentine?"
 ];
 
 export const mainQuestionTexts = [

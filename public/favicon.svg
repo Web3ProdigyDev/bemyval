@@ -1,28 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <linearGradient id="giftGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFD700"/>
-      <stop offset="100%" style="stop-color:#FFA500"/>
+    <linearGradient id="boxGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9B59B6"/>
+      <stop offset="100%" style="stop-color:#6C3483"/>
     </linearGradient>
-    <linearGradient id="ribbonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FF6B6B"/>
-      <stop offset="100%" style="stop-color:#EE5A5A"/>
+    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F1C40F"/>
+      <stop offset="100%" style="stop-color:#F39C12"/>
     </linearGradient>
   </defs>
-  <!-- Gift box base -->
-  <rect x="15" y="45" width="70" height="50" rx="5" fill="url(#giftGradient)"/>
-  <!-- Gift box lid -->
-  <rect x="10" y="35" width="80" height="15" rx="3" fill="url(#giftGradient)"/>
-  <!-- Vertical ribbon -->
-  <rect x="44" y="35" width="12" height="60" fill="url(#ribbonGradient)"/>
-  <!-- Horizontal ribbon -->
-  <rect x="10" y="38" width="80" height="8" fill="url(#ribbonGradient)"/>
-  <!-- Bow left loop -->
-  <ellipse cx="38" cy="28" rx="12" ry="15" fill="url(#ribbonGradient)"/>
-  <!-- Bow right loop -->
-  <ellipse cx="62" cy="28" rx="12" ry="15" fill="url(#ribbonGradient)"/>
-  <!-- Bow center -->
-  <circle cx="50" cy="32" r="8" fill="url(#ribbonGradient)"/>
-  <!-- Sparkle -->
-  <text x="75" y="25" font-size="18">✨</text>
+  <!-- Mystery box base -->
+  <rect x="20" y="45" width="60" height="45" rx="4" fill="url(#boxGradient)"/>
+  <!-- Box lid -->
+  <rect x="15" y="35" width="70" height="14" rx="3" fill="url(#boxGradient)"/>
+  <!-- Question mark -->
+  <text x="50" y="78" font-size="32" font-weight="bold" fill="#F1C40F" text-anchor="middle" font-family="Arial">?</text>
+  <!-- Stars around -->
+  <text x="18" y="30" font-size="14">⭐</text>
+  <text x="75" y="25" font-size="16">✨</text>
+  <text x="82" y="55" font-size="12">⭐</text>
 </svg>
