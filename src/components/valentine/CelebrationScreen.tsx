@@ -11,7 +11,9 @@ import {
   loveMessages,
   valentineClosings
 } from '@/lib/randomContent';
+import { playConfettiSound } from '@/lib/romanticSounds';
 import FloatingMessages from './FloatingMessages';
+import CelebrationVideoPlayer from './CelebrationVideoPlayer';
 
 interface CelebrationScreenProps {
   recipientName?: string;
@@ -38,6 +40,9 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
   useEffect(() => {
     const duration = 3000;
     const animationEnd = Date.now() + duration;
+    
+    // Play initial confetti sound
+    playConfettiSound();
 
     const interval = setInterval(() => {
       const timeLeft = animationEnd - Date.now();
@@ -47,6 +52,11 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
       }
 
       const particleCount = 25 * (timeLeft / duration);
+      
+      // Play sound on each burst
+      if (Math.random() > 0.6) {
+        playConfettiSound();
+      }
 
       confetti({
         particleCount: Math.floor(particleCount),
@@ -121,14 +131,14 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
             className="text-center max-w-xl px-4"
           >
             <motion.div
-              className="text-5xl mb-4"
+              className="text-5xl mb-3"
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
               💕
             </motion.div>
             <motion.h2 
-              className="font-romantic text-3xl sm:text-4xl text-primary mb-4"
+              className="font-romantic text-2xl sm:text-3xl md:text-4xl text-primary mb-3"
             >
               {recipientName ? `${recipientName}, ${content.afterTitle}` : content.fallbackSubtitle}
             </motion.h2>
@@ -139,22 +149,33 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="bg-primary/10 rounded-xl p-4 mb-4 border border-primary/20"
+                className="bg-primary/10 rounded-xl p-3 mb-3 border border-primary/20"
               >
-                <p className="text-foreground italic text-lg">"{customMessage}"</p>
+                <p className="text-foreground italic text-base sm:text-lg">"{customMessage}"</p>
               </motion.div>
             )}
 
             <motion.p 
-              className="text-base sm:text-lg text-foreground mb-3 leading-relaxed"
+              className="text-sm sm:text-base md:text-lg text-foreground mb-2 leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
               {content.loveMessage}
             </motion.p>
+            
+            {/* Video Player - Celebration Videos */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="my-4"
+            >
+              <CelebrationVideoPlayer />
+            </motion.div>
+            
             <motion.p 
-              className="text-xl sm:text-2xl text-primary font-semibold"
+              className="text-lg sm:text-xl md:text-2xl text-primary font-semibold"
             >
               {content.closing}{recipientName ? `, ${recipientName}` : ""}
             </motion.p>
@@ -165,9 +186,9 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="mt-4 pt-4 border-t border-primary/20"
+                className="mt-3 pt-3 border-t border-primary/20"
               >
-                <p className="text-base text-foreground">
+                <p className="text-sm sm:text-base text-foreground">
                   With love from <span className="text-primary font-bold">{senderName}</span> 💝
                 </p>
               </motion.div>
