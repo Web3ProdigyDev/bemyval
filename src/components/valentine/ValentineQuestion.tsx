@@ -12,6 +12,7 @@ import {
   hintAfterEscapeTexts,
   noEscapePhrases 
 } from '@/lib/randomContent';
+import VideoPlayer from './VideoPlayer';
 
 interface ValentineQuestionProps {
   onYesClick: () => void;
@@ -109,7 +110,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
     : content.mainQuestion;
 
   return (
-    <div ref={containerRef} className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8">
+    <div ref={containerRef} className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-4 py-4 sm:py-6 overflow-hidden">
       {/* Personalized greeting */}
       {recipientName && (
         <motion.div
@@ -157,10 +158,10 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
         initial={{ opacity: 0, y: -30, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.8, type: "spring" }}
-        className="text-center mb-8 sm:mb-10 px-2"
+        className="text-center mb-4 sm:mb-6 px-2"
       >
         <motion.h1
-          className="font-romantic text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-primary mb-3 drop-shadow-lg leading-tight"
+          className="font-romantic text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary mb-2 drop-shadow-lg leading-tight"
           animate={{ 
             scale: [1, 1.02, 1],
           }}
@@ -173,10 +174,10 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
           {questionText}
         </motion.h1>
         <motion.div
-          className="text-4xl sm:text-5xl"
+          className="text-3xl sm:text-4xl"
           animate={{ 
             scale: [1, 1.2, 1],
-            y: [0, -8, 0],
+            y: [0, -6, 0],
           }}
           transition={{ 
             duration: 1.5, 
@@ -187,6 +188,11 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
           💕
         </motion.div>
       </motion.div>
+
+      {/* Video Player */}
+      <div className="mb-4 sm:mb-6">
+        <VideoPlayer />
+      </div>
 
       {/* Funny message popup */}
       <AnimatePresence>
