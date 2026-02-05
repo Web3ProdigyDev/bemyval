@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { MessageCircle, Globe } from 'lucide-react';
+import { MessageCircle, Globe, Phone } from 'lucide-react';
 import {
   getRandomItem,
   celebrationTitles,
@@ -11,6 +11,7 @@ import {
   loveMessages,
   valentineClosings
 } from '@/lib/randomContent';
+import FloatingMessages from './FloatingMessages';
 
 interface CelebrationScreenProps {
   recipientName?: string;
@@ -74,6 +75,8 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
 
   return (
     <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8 overflow-hidden">
+      {/* Floating celebration messages */}
+      <FloatingMessages />
       <AnimatePresence mode="wait">
         {!showMessage && (
           <motion.div
@@ -173,52 +176,56 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
         )}
       </AnimatePresence>
 
-      {/* Developer Credit - Very subtle, animated footer */}
+      {/* Developer Credit - Enhanced visibility with animation */}
       <AnimatePresence>
         {showContact && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            initial={{ opacity: 0, y: 40, scale: 0.85 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ 
               type: "spring",
-              stiffness: 150,
-              damping: 20,
-              duration: 0.6 
+              stiffness: 120,
+              damping: 15,
+              duration: 0.8 
             }}
-            className="fixed bottom-3 left-1/2 -translate-x-1/2"
+            className="fixed bottom-4 left-1/2 -translate-x-1/2"
           >
             <motion.div
-              className="flex items-center gap-2.5 bg-card/60 backdrop-blur-sm border border-border/20 rounded-full px-3 py-1.5 shadow-sm"
-              whileHover={{ 
-                scale: 1.03, 
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                borderColor: "rgba(255, 107, 138, 0.2)"
+              className="flex items-center gap-3 bg-card/80 backdrop-blur-md border border-primary/30 rounded-full px-4 py-2 shadow-valentine"
+              animate={{
+                boxShadow: [
+                  "0 4px 20px rgba(255, 107, 138, 0.2)",
+                  "0 4px 30px rgba(255, 107, 138, 0.35)",
+                  "0 4px 20px rgba(255, 107, 138, 0.2)",
+                ]
               }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 2, repeat: Infinity }}
+              whileHover={{ 
+                scale: 1.05, 
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
+              }}
             >
               <motion.span 
-                className="text-muted-foreground/50 text-[10px]"
+                className="text-primary/70 text-xs sm:text-sm font-medium"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.2 }}
               >
-                ✨ by
+                ✨ Made with love by
               </motion.span>
               <motion.a
                 href="https://inspireddevs.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary/60 hover:text-primary text-[10px] font-medium transition-colors"
-                whileHover={{ scale: 1.05 }}
+                className="text-primary hover:text-primary/80 text-xs sm:text-sm font-bold transition-colors flex items-center gap-1"
+                whileHover={{ scale: 1.08 }}
               >
+                <Globe className="w-3.5 h-3.5" />
                 Inspired Devs
               </motion.a>
               <motion.span 
-                className="text-muted-foreground/20"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
+                className="text-primary/30"
               >
                 •
               </motion.span>
@@ -226,13 +233,24 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                 href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#25D366]/50 hover:text-[#25D366] transition-colors flex items-center"
-                whileHover={{ scale: 1.1 }}
+                className="text-[#25D366] hover:text-[#128C7E] transition-colors flex items-center gap-1.5 text-xs sm:text-sm font-medium"
+                whileHover={{ scale: 1.08 }}
                 initial={{ opacity: 0, x: -5 }}
                 animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span className="hidden sm:inline">Chat with us</span>
+              </motion.a>
+              <motion.a
+                href="tel:+2349019459804"
+                className="text-primary/70 hover:text-primary transition-colors flex items-center"
+                whileHover={{ scale: 1.1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
               >
-                <MessageCircle className="w-3 h-3" />
+                <Phone className="w-3.5 h-3.5" />
               </motion.a>
             </motion.div>
           </motion.div>
