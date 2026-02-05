@@ -189,8 +189,8 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
         </motion.div>
       </motion.div>
 
-      {/* Video Player */}
-      <div className="mb-4 sm:mb-6">
+      {/* Video Player - Larger size */}
+      <div className="mb-3 sm:mb-5 w-full flex justify-center">
         <VideoPlayer />
       </div>
 

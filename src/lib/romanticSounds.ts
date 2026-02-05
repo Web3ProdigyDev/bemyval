@@ -162,3 +162,48 @@ export const playSuccessSound = () => {
     console.log('Audio not supported');
   }
 };
+
+// Celebratory confetti burst sound
+export const playConfettiSound = () => {
+  try {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Pop sound with sparkle
+    const pop = audioContext.createOscillator();
+    const popGain = audioContext.createGain();
+    
+    pop.type = 'sine';
+    pop.connect(popGain);
+    popGain.connect(audioContext.destination);
+    
+    pop.frequency.setValueAtTime(800, audioContext.currentTime);
+    pop.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.08);
+    
+    popGain.gain.setValueAtTime(0.25, audioContext.currentTime);
+    popGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+    
+    pop.start();
+    pop.stop(audioContext.currentTime + 0.1);
+    
+    // Add sparkle cascade
+    [0.05, 0.1, 0.15, 0.2].forEach((delay, i) => {
+      setTimeout(() => {
+        const sparkle = audioContext.createOscillator();
+        const sparkleGain = audioContext.createGain();
+        sparkle.type = 'triangle';
+        const baseFreq = 1500 + Math.random() * 1000;
+        sparkle.frequency.setValueAtTime(baseFreq, audioContext.currentTime);
+        sparkle.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, audioContext.currentTime + 0.15);
+        sparkleGain.gain.setValueAtTime(0.04, audioContext.currentTime);
+        sparkleGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+        sparkle.connect(sparkleGain);
+        sparkleGain.connect(audioContext.destination);
+        sparkle.start();
+        sparkle.stop(audioContext.currentTime + 0.2);
+      }, delay * 1000);
+    });
+    
+  } catch (e) {
+    console.log('Audio not supported');
+  }
+};
