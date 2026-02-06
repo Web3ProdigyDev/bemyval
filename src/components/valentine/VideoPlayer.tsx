@@ -27,6 +27,7 @@ const VideoPlayer = () => {
         playsInline
         autoPlay
         loop
+        preload="auto"
         className="w-full h-auto aspect-[4/5] object-cover"
       />
     </motion.div>

@@ -54,6 +54,7 @@ const CelebrationVideoPlayer = () => {
         muted
         playsInline
         autoPlay
+        preload="auto"
         onEnded={handleVideoEnd}
         className="w-full h-auto aspect-[4/5] object-cover"
       />

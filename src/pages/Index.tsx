@@ -11,6 +11,7 @@ import BackgroundMusic, { BackgroundMusicHandle } from '@/components/valentine/B
 import ShareDialog from '@/components/valentine/ShareDialog';
 import CursorSparkles from '@/components/valentine/CursorSparkles';
 import useVisitorTracking from '@/hooks/useVisitorTracking';
+import useMediaPreloader from '@/hooks/useMediaPreloader';
 
 type Screen = 'giftbox' | 'envelope' | 'question' | 'celebration';
 
@@ -38,6 +39,9 @@ const Index = () => {
   const [showHearts, setShowHearts] = useState(false);
   const musicRef = useRef<BackgroundMusicHandle>(null);
   const { trackPageView, trackYes, trackShare, trackScreenChange } = useVisitorTracking();
+  
+  // Preload all media assets on mount
+  useMediaPreloader();
 
   // Track page view on mount
   useEffect(() => {
