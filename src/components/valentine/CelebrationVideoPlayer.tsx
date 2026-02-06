@@ -46,7 +46,7 @@ const CelebrationVideoPlayer = () => {
       initial={{ opacity: 0, scale: 0.9, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4, type: "spring" }}
-      className="w-full max-w-[300px] sm:max-w-[360px] md:max-w-[400px] mx-auto rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20"
+      className="w-full max-w-[260px] sm:max-w-[300px] md:max-w-[340px] mx-auto rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20"
     >
       <video
         ref={videoRef}
@@ -55,7 +55,7 @@ const CelebrationVideoPlayer = () => {
         playsInline
         autoPlay
         onEnded={handleVideoEnd}
-        className="w-full h-auto aspect-video object-cover"
+        className="w-full h-auto aspect-[4/5] object-cover"
       />
     </motion.div>
   );

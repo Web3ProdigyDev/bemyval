@@ -18,7 +18,7 @@ const VideoPlayer = () => {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay: 0.3 }}
-      className="w-full max-w-[320px] sm:max-w-[380px] md:max-w-[420px] mx-auto rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20"
+      className="w-full max-w-[280px] sm:max-w-[320px] md:max-w-[360px] mx-auto rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20"
     >
       <video
         ref={videoRef}
@@ -27,7 +27,7 @@ const VideoPlayer = () => {
         playsInline
         autoPlay
         loop
-        className="w-full h-auto aspect-video object-cover"
+        className="w-full h-auto aspect-[4/5] object-cover"
       />
     </motion.div>
   );
