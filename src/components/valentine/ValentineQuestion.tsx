@@ -110,189 +110,195 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
     : content.mainQuestion;
 
   return (
-    <div ref={containerRef} className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-4 py-4 sm:py-6 overflow-hidden">
-      {/* Personalized greeting */}
-      {recipientName && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-4"
-        >
-          <p className="text-lg sm:text-xl text-foreground font-medium">
-            Hey <span className="text-primary font-bold">{recipientName}</span>! 👋
-          </p>
-        </motion.div>
-      )}
-
-      {/* Sender Name */}
-      {senderName && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="text-center mb-2"
-        >
-          <p className="text-sm sm:text-base text-muted-foreground">
-            From <span className="text-primary font-semibold">{senderName}</span> 💌
-          </p>
-        </motion.div>
-      )}
-
-      {/* Custom Message */}
-      {customMessage && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.25 }}
-          className="text-center mb-4 max-w-md"
-        >
-          <p className="text-base sm:text-lg text-foreground/80 italic">
-            "{customMessage}"
-          </p>
-        </motion.div>
-      )}
-
-      {/* Main Question */}
-      <motion.div
-        initial={{ opacity: 0, y: -30, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.8, type: "spring" }}
-        className="text-center mb-4 sm:mb-6 px-2"
-      >
-        <motion.h1
-          className="font-romantic text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary mb-2 drop-shadow-lg leading-tight"
-          animate={{ 
-            scale: [1, 1.02, 1],
-          }}
-          transition={{ 
-            duration: 2, 
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        >
-          {questionText}
-        </motion.h1>
-        <motion.div
-          className="text-3xl sm:text-4xl"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            y: [0, -6, 0],
-          }}
-          transition={{ 
-            duration: 1.5, 
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        >
-          💕
-        </motion.div>
-      </motion.div>
-
-      {/* Video Player - Larger size */}
-      <div className="mb-3 sm:mb-5 w-full flex justify-center">
-        <VideoPlayer />
-      </div>
-
-      {/* Funny message popup */}
-      <AnimatePresence>
-        {showMessage && (
+    <div 
+      ref={containerRef} 
+      className="relative z-10 flex flex-col min-h-screen px-4 py-6 sm:py-8 overflow-x-hidden"
+    >
+      {/* Main Content - Flex column, natural stacking */}
+      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
+        {/* Personalized greeting */}
+        {recipientName && (
           <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5, y: -20 }}
-            className="fixed top-[20%] left-1/2 transform -translate-x-1/2 bg-card text-card-foreground px-6 py-3 rounded-2xl shadow-valentine text-xl font-bold z-50 border-2 border-primary/20"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-3"
           >
-            {currentMessage}
+            <p className="text-lg sm:text-xl text-foreground font-medium">
+              Hey <span className="text-primary font-bold">{recipientName}</span>! 👋
+            </p>
           </motion.div>
         )}
-      </AnimatePresence>
 
-      {/* Buttons Container */}
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center justify-center w-full max-w-lg">
-        {!showDoubleYes ? (
-          <>
-            {/* Yes Button */}
-            <motion.button
-              onClick={handleYesClick}
-              className="bg-valentine-gradient text-primary-foreground font-bold py-3 px-8 rounded-full shadow-valentine relative overflow-hidden"
-              style={{ transform: `scale(${yesScale})` }}
-              whileHover={{ scale: yesScale * 1.08 }}
-              whileTap={{ scale: yesScale * 0.95 }}
-            >
-              <span className="text-lg sm:text-xl relative z-10">{content.yesButton}</span>
-            </motion.button>
-
-            {/* No Button */}
-            <motion.button
-              type="button"
-              className="bg-muted text-muted-foreground font-bold py-2.5 px-6 rounded-full"
-              style={{
-                transform: `translate(${noPosition.x}px, ${noPosition.y}px) scale(${noScale})`,
-                opacity: Math.max(noScale, 0.6),
-              }}
-              onMouseEnter={!isMobile ? (e) => moveNoButton(e) : undefined}
-              onTouchStart={isMobile ? (e) => moveNoButton(e) : undefined}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                moveNoButton(e);
-              }}
-            >
-              <span className="text-base">No 😢</span>
-            </motion.button>
-          </>
-        ) : (
-          /* Double Yes Buttons */
+        {/* Sender Name */}
+        {senderName && (
           <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 200 }}
-            className="flex flex-col sm:flex-row gap-4 w-full justify-center"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="text-center mb-2"
           >
-            <motion.button
-              onClick={handleYesClick}
-              className="bg-valentine-gradient text-primary-foreground font-bold py-4 px-10 rounded-full shadow-valentine"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="text-xl relative z-10">{content.doubleYes[0]}</span>
-            </motion.button>
-            
-            <motion.button
-              onClick={handleYesClick}
-              className="bg-valentine-gradient text-primary-foreground font-bold py-4 px-10 rounded-full shadow-valentine"
-              animate={{ y: [0, -4, 0] }}
-              transition={{ duration: 1, repeat: Infinity }}
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="text-xl relative z-10">{content.doubleYes[1]}</span>
-            </motion.button>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              From <span className="text-primary font-semibold">{senderName}</span> 💌
+            </p>
           </motion.div>
         )}
-      </div>
 
-      {/* Hint text */}
-      {escapeCount > 0 && escapeCount < 5 && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-6 text-foreground text-center font-medium text-sm px-4"
-        >
-          {content.hintText}
-        </motion.p>
-      )}
+        {/* Custom Message */}
+        {customMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="text-center mb-4 w-full"
+          >
+            <p className="text-base sm:text-lg text-foreground/80 italic">
+              "{customMessage}"
+            </p>
+          </motion.div>
+        )}
 
-      {showDoubleYes && (
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-6 text-foreground text-lg font-medium text-center"
+        {/* Main Question */}
+        <motion.div
+          initial={{ opacity: 0, y: -30, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, type: "spring" }}
+          className="text-center mb-4 w-full"
         >
-          {content.noEscape.replace(/!/, `, ${displayName}!`)}
-        </motion.p>
-      )}
+          <motion.h1
+            className="font-romantic text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary mb-2 drop-shadow-lg leading-tight"
+            animate={{ 
+              scale: [1, 1.02, 1],
+            }}
+            transition={{ 
+              duration: 2, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            {questionText}
+          </motion.h1>
+          <motion.div
+            className="text-3xl sm:text-4xl"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              y: [0, -6, 0],
+            }}
+            transition={{ 
+              duration: 1.5, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            💕
+          </motion.div>
+        </motion.div>
+
+        {/* Video Player - Separate wrapper, fully responsive */}
+        <div className="w-full mb-4">
+          <VideoPlayer />
+        </div>
+
+        {/* Funny message popup */}
+        <AnimatePresence>
+          {showMessage && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5, y: -20 }}
+              className="fixed top-[20%] left-1/2 transform -translate-x-1/2 bg-card text-card-foreground px-6 py-3 rounded-2xl shadow-valentine text-xl font-bold z-50 border-2 border-primary/20"
+            >
+              {currentMessage}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Buttons Container - Flexbox with gap */}
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full mt-2">
+          {!showDoubleYes ? (
+            <>
+              {/* Yes Button */}
+              <motion.button
+                onClick={handleYesClick}
+                className="bg-valentine-gradient text-primary-foreground font-bold py-3 px-8 rounded-full shadow-valentine relative overflow-hidden"
+                style={{ transform: `scale(${yesScale})` }}
+                whileHover={{ scale: yesScale * 1.08 }}
+                whileTap={{ scale: yesScale * 0.95 }}
+              >
+                <span className="text-lg sm:text-xl relative z-10">{content.yesButton}</span>
+              </motion.button>
+
+              {/* No Button */}
+              <motion.button
+                type="button"
+                className="bg-muted text-muted-foreground font-bold py-2.5 px-6 rounded-full"
+                style={{
+                  transform: `translate(${noPosition.x}px, ${noPosition.y}px) scale(${noScale})`,
+                  opacity: Math.max(noScale, 0.6),
+                }}
+                onMouseEnter={!isMobile ? (e) => moveNoButton(e) : undefined}
+                onTouchStart={isMobile ? (e) => moveNoButton(e) : undefined}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  moveNoButton(e);
+                }}
+              >
+                <span className="text-base">No 😢</span>
+              </motion.button>
+            </>
+          ) : (
+            /* Double Yes Buttons */
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="flex flex-col sm:flex-row gap-4 w-full justify-center items-center"
+            >
+              <motion.button
+                onClick={handleYesClick}
+                className="bg-valentine-gradient text-primary-foreground font-bold py-4 px-10 rounded-full shadow-valentine"
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="text-xl relative z-10">{content.doubleYes[0]}</span>
+              </motion.button>
+              
+              <motion.button
+                onClick={handleYesClick}
+                className="bg-valentine-gradient text-primary-foreground font-bold py-4 px-10 rounded-full shadow-valentine"
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 1, repeat: Infinity }}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="text-xl relative z-10">{content.doubleYes[1]}</span>
+              </motion.button>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Hint text */}
+        {escapeCount > 0 && escapeCount < 5 && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-4 text-foreground text-center font-medium text-sm"
+          >
+            {content.hintText}
+          </motion.p>
+        )}
+
+        {showDoubleYes && (
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-4 text-foreground text-lg font-medium text-center"
+          >
+            {content.noEscape.replace(/!/, `, ${displayName}!`)}
+          </motion.p>
+        )}
+      </main>
     </div>
   );
 };

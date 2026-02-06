@@ -1,13 +1,12 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Heart, Send } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 import FloatingHearts from '@/components/valentine/FloatingHearts';
 import GiftBoxScreen from '@/components/valentine/GiftBoxScreen';
 import EnvelopeScreen from '@/components/valentine/EnvelopeScreen';
 import ValentineQuestion from '@/components/valentine/ValentineQuestion';
 import CelebrationScreen from '@/components/valentine/CelebrationScreen';
-import BackgroundMusic, { BackgroundMusicHandle } from '@/components/valentine/BackgroundMusic';
+import ActionButtons, { ActionButtonsHandle } from '@/components/valentine/ActionButtons';
 import ShareDialog from '@/components/valentine/ShareDialog';
 import CursorSparkles from '@/components/valentine/CursorSparkles';
 import useVisitorTracking from '@/hooks/useVisitorTracking';
@@ -37,7 +36,7 @@ const Index = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('giftbox');
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
-  const musicRef = useRef<BackgroundMusicHandle>(null);
+  const actionButtonsRef = useRef<ActionButtonsHandle>(null);
   const { trackPageView, trackYes, trackShare, trackScreenChange } = useVisitorTracking();
   
   // Preload all media assets on mount
@@ -77,7 +76,7 @@ const Index = () => {
 
   // Start music when envelope opens
   const handleMusicStart = () => {
-    musicRef.current?.play();
+    actionButtonsRef.current?.play();
     setShowHearts(true); // Show valentine hearts when music starts
   };
 
@@ -94,52 +93,15 @@ const Index = () => {
       {/* Cursor Sparkles Effect */}
       <CursorSparkles />
 
-      {/* Background Music - controlled programmatically */}
-      <BackgroundMusic ref={musicRef} />
+      {/* Action Buttons - Share & Mute grouped together with proper spacing */}
+      <ActionButtons 
+        ref={actionButtonsRef}
+        showShareButton={currentScreen === 'celebration'}
+        onShareClick={handleShareClick}
+      />
 
       {/* Floating Hearts Background - only show after envelope opens */}
       {showHearts && <FloatingHearts />}
-
-      {/* Share Button - only shows on celebration screen with enhanced animation */}
-      <AnimatePresence>
-        {currentScreen === 'celebration' && (
-          <motion.button
-            onClick={handleShareClick}
-            className="fixed top-4 right-4 z-50 bg-valentine-gradient text-primary-foreground px-4 py-2 rounded-full shadow-valentine flex items-center gap-2 font-semibold text-sm"
-            initial={{ opacity: 0, scale: 0, y: -20, rotate: -10 }}
-            animate={{ 
-              opacity: 1, 
-              scale: 1, 
-              y: 0, 
-              rotate: 0,
-            }}
-            exit={{ opacity: 0, scale: 0.8, y: -10 }}
-            transition={{ 
-              delay: 3,
-              type: "spring",
-              stiffness: 200,
-              damping: 15
-            }}
-            whileHover={{ scale: 1.08, boxShadow: "0 8px 25px rgba(255, 107, 138, 0.4)" }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <motion.span
-              animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-            >
-              <Send className="w-4 h-4" />
-            </motion.span>
-            <span>Share the Love</span>
-            <motion.span
-              className="text-xs"
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              💕
-            </motion.span>
-          </motion.button>
-        )}
-      </AnimatePresence>
 
       {/* Share Dialog */}
       <ShareDialog 
