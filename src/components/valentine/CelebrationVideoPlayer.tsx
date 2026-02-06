@@ -43,21 +43,24 @@ const CelebrationVideoPlayer = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9, y: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.4, type: "spring" }}
-      className="w-full max-w-[260px] sm:max-w-[300px] md:max-w-[340px] mx-auto rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="w-full max-w-sm mx-auto"
     >
-      <video
-        ref={videoRef}
-        src={videoSources[currentPhase]}
-        muted
-        playsInline
-        autoPlay
-        preload="auto"
-        onEnded={handleVideoEnd}
-        className="w-full h-auto aspect-[4/5] object-cover"
-      />
+      {/* Video wrapper - fully responsive */}
+      <div className="w-full rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20 bg-muted">
+        <video
+          ref={videoRef}
+          src={videoSources[currentPhase]}
+          muted
+          playsInline
+          autoPlay
+          preload="auto"
+          onEnded={handleVideoEnd}
+          className="w-full h-auto aspect-[4/5] object-cover"
+        />
+      </div>
     </motion.div>
   );
 };
