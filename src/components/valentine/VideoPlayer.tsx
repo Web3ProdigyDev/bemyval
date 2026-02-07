@@ -18,7 +18,7 @@ const VideoPlayer = () => {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay: 0.3 }}
-      className="w-full max-w-sm mx-auto"
+      className="w-full max-w-[260px] mx-auto"
     >
       {/* Video wrapper - fully responsive, rounded corners */}
       <div className="w-full rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20 bg-muted">
@@ -30,7 +30,7 @@ const VideoPlayer = () => {
           autoPlay
           loop
           preload="auto"
-          className="w-full h-auto aspect-[4/5] object-cover"
+          className="w-full h-auto aspect-[3/4] object-cover"
         />
       </div>
     </motion.div>
