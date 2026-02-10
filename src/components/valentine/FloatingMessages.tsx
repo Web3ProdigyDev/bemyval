@@ -80,31 +80,40 @@ const FloatingMessages = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      {messages.map((msg, index) => (
-        <motion.div
-          key={msg.id}
-          className="absolute text-primary/70 font-bold text-sm sm:text-lg md:text-xl whitespace-nowrap drop-shadow-md"
-          style={{
-            left: `${msg.x}%`,
-            top: `${msg.y}%`,
-          }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ 
-            opacity: [0, 0.8, 0.6, 0.8, 0],
-            scale: 1,
-            y: [0, -15, 0, -15, 0],
-          }}
-          transition={{
-            delay: index * 0.06,
-            duration: 5,
-            repeat: Infinity,
-            repeatType: "loop",
-            ease: "easeInOut",
-          }}
-        >
-          {msg.text}
-        </motion.div>
-      ))}
+      {messages.map((msg, index) => {
+        // Randomize delay for each message so they don't start at the same time
+        const randomDelay = Math.random() * 3;
+        // Randomize duration between 6-8 seconds for variety
+        const randomDuration = 6 + Math.random() * 2;
+        
+        return (
+          <motion.div
+            key={msg.id}
+            className="absolute text-primary/75 font-extrabold text-base sm:text-2xl md:text-3xl whitespace-nowrap drop-shadow-lg"
+            style={{
+              left: `${msg.x}%`,
+              top: `${msg.y}%`,
+              textShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+            }}
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ 
+              opacity: [0, 0.85, 0.7, 0.85, 0],
+              scale: [0.7, 1, 1, 1, 0.7],
+              y: [0, -20, 0, -20, 0],
+            }}
+            transition={{
+              delay: randomDelay,
+              duration: randomDuration,
+              repeat: Infinity,
+              repeatType: "loop",
+              repeatDelay: 0.5,
+              ease: "easeInOut",
+            }}
+          >
+            {msg.text}
+          </motion.div>
+        );
+      })}
     </div>
   );
 };
