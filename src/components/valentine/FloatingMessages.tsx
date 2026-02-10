@@ -21,50 +21,54 @@ interface SafePosition {
 }
 
 const FloatingMessages = () => {
-  // Pre-generate positions in safe zones using useMemo
+  // Pre-generate positions in safe zones using useMemo with grid to prevent overlaps
   const messagePositions = useMemo(() => {
     const positions: SafePosition[] = [];
-    const zones: SafePosition['zone'][] = ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'left', 'right'];
+    const GRID_SIZE = 15; // Percentage units for grid cells
+    const SPACING = 18; // Minimum spacing between items
     
-    // Generate more messages for better coverage
-    const messageCount = 24;
-    
-    for (let i = 0; i < messageCount; i++) {
-      const zone = zones[i % zones.length];
-      let x: number, y: number;
+    // Define grid positions systematically - no random overlap
+    const gridPositions = [
+      // Top-left zone
+      { x: 3, y: 8, zone: 'top-left' as const },
+      { x: 10, y: 12, zone: 'top-left' as const },
+      { x: 5, y: 20, zone: 'top-left' as const },
       
-      // Position based on zone - keeping away from center content
-      switch (zone) {
-        case 'top-left':
-          x = 2 + Math.random() * 18;
-          y = 5 + Math.random() * 15;
-          break;
-        case 'top-right':
-          x = 80 + Math.random() * 18;
-          y = 5 + Math.random() * 15;
-          break;
-        case 'bottom-left':
-          x = 2 + Math.random() * 18;
-          y = 70 + Math.random() * 20;
-          break;
-        case 'bottom-right':
-          x = 80 + Math.random() * 18;
-          y = 70 + Math.random() * 20;
-          break;
-        case 'left':
-          x = 1 + Math.random() * 12;
-          y = 25 + Math.random() * 40;
-          break;
-        case 'right':
-          x = 87 + Math.random() * 12;
-          y = 25 + Math.random() * 40;
-          break;
-      }
+      // Top-right zone
+      { x: 82, y: 8, zone: 'top-right' as const },
+      { x: 87, y: 15, zone: 'top-right' as const },
+      { x: 78, y: 22, zone: 'top-right' as const },
       
-      positions.push({ x, y, zone });
-    }
+      // Left side
+      { x: 2, y: 32, zone: 'left' as const },
+      { x: 4, y: 45, zone: 'left' as const },
+      { x: 3, y: 58, zone: 'left' as const },
+      
+      // Right side
+      { x: 85, y: 35, zone: 'right' as const },
+      { x: 88, y: 48, zone: 'right' as const },
+      { x: 86, y: 62, zone: 'right' as const },
+      
+      // Bottom-left zone
+      { x: 6, y: 72, zone: 'bottom-left' as const },
+      { x: 12, y: 80, zone: 'bottom-left' as const },
+      { x: 3, y: 85, zone: 'bottom-left' as const },
+      
+      // Bottom-right zone
+      { x: 81, y: 75, zone: 'bottom-right' as const },
+      { x: 88, y: 82, zone: 'bottom-right' as const },
+      { x: 84, y: 88, zone: 'bottom-right' as const },
+      
+      // Additional spacing positions
+      { x: 8, y: 5, zone: 'top-left' as const },
+      { x: 75, y: 10, zone: 'top-right' as const },
+      { x: 5, y: 68, zone: 'left' as const },
+      { x: 90, y: 72, zone: 'right' as const },
+      { x: 10, y: 90, zone: 'bottom-left' as const },
+      { x: 80, y: 92, zone: 'bottom-right' as const },
+    ];
     
-    return positions;
+    return gridPositions.slice(0, 24); // Use 24 positions
   }, []);
 
   // Shuffle and pick messages
