@@ -22,9 +22,10 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
       play: () => {
         if (audioRef.current) {
           audioRef.current.volume = 0.3;
+          audioRef.current.currentTime = 0; // Start from beginning
           audioRef.current.play()
             .then(() => setIsPlaying(true))
-            .catch(() => {});
+            .catch(() => setIsPlaying(true)); // Mark as playing even if promise fails
         }
       },
       pause: () => {
@@ -63,7 +64,7 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
           {showShareButton && (
             <motion.button
               onClick={onShareClick}
-              className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-valentine-gradient text-primary-foreground px-4 py-2.5 sm:px-5 sm:py-3 rounded-full shadow-valentine flex items-center gap-2 font-bold text-sm sm:text-base"
+              className="fixed top-3 right-3 sm:top-4 sm:right-4 z-50 bg-valentine-gradient text-primary-foreground px-3 py-2 sm:px-4 sm:py-2.5 rounded-full shadow-valentine flex items-center gap-2 font-bold text-xs sm:text-sm"
               initial={{ opacity: 0, scale: 0, y: -20 }}
               animate={{
                 opacity: 1,
@@ -80,16 +81,17 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
               }}
               whileHover={{ scale: 1.1, boxShadow: "0 8px 30px rgba(255, 107, 138, 0.5)" }}
               whileTap={{ scale: 0.95 }}
+              title="Share this love surprise with someone special"
             >
               <motion.span
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
               >
-                <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
               </motion.span>
-              <span>Spread the Love</span>
+              <span className="whitespace-nowrap">Share the Love</span>
               <motion.span
-                className="text-sm"
+                className="text-xs"
                 animate={{ rotate: [0, 15, -15, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               >
