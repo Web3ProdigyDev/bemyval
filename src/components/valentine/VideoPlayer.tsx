@@ -9,16 +9,38 @@ const VideoPlayer = () => {
     const video = videoRef.current;
     if (!video) return;
 
+    const handleError = (e: Event) => {
+      console.log("[v0] Video error:", e);
+      setHasError(true);
+    };
+
+    const handleCanPlay = () => {
+      console.log("[v0] Video can play");
+      setHasError(false);
+    };
+
     // Timeout: if video can't play within 8s, show poster fallback
     const timeout = setTimeout(() => {
       if (video.readyState < 3) {
+        console.log("[v0] Video timeout - readyState:", video.readyState);
         setHasError(true);
       }
     }, 8000);
 
-    video.play().catch(() => {});
+    video.addEventListener('error', handleError);
+    video.addEventListener('canplay', handleCanPlay);
+    
+    // Reset the video to ensure it loads properly
+    video.load();
+    video.play().catch((err) => {
+      console.log("[v0] Play error:", err);
+    });
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+      video.removeEventListener('error', handleError);
+      video.removeEventListener('canplay', handleCanPlay);
+    };
   }, []);
 
   return (
@@ -41,8 +63,10 @@ const VideoPlayer = () => {
             playsInline
             autoPlay
             loop
-            preload="metadata"
+            preload="auto"
+            crossOrigin="anonymous"
             className="w-full h-auto aspect-[3/4] object-cover"
+            onError={() => setHasError(true)}
           />
         )}
       </div>

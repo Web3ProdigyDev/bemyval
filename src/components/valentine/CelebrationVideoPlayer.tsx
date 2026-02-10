@@ -15,6 +15,7 @@ const CelebrationVideoPlayer = () => {
   };
 
   const handleVideoEnd = useCallback(() => {
+    console.log("[v0] Video ended, currentPhase:", currentPhase);
     switch (currentPhase) {
       case 'video2-1':
         setCurrentPhase('video2-2');
@@ -25,11 +26,21 @@ const CelebrationVideoPlayer = () => {
       case 'video3':
         if (videoRef.current) {
           videoRef.current.currentTime = 0;
-          videoRef.current.play();
+          videoRef.current.play().catch(err => console.log("[v0] Play error:", err));
         }
         break;
     }
   }, [currentPhase]);
+
+  const handleError = (e: Event) => {
+    console.log("[v0] Video error:", e);
+    setHasError(true);
+  };
+
+  const handleCanPlay = () => {
+    console.log("[v0] Video can play, phase:", currentPhase);
+    setHasError(false);
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -37,17 +48,28 @@ const CelebrationVideoPlayer = () => {
 
     setHasError(false);
 
+    // Add event listeners
+    video.addEventListener('error', handleError);
+    video.addEventListener('canplay', handleCanPlay);
+
     // Timeout for slow network
     const timeout = setTimeout(() => {
       if (video.readyState < 3) {
+        console.log("[v0] Video timeout - readyState:", video.readyState, "phase:", currentPhase);
         setHasError(true);
       }
     }, 10000);
 
     video.load();
-    video.play().catch(() => {});
+    video.play().catch((err) => {
+      console.log("[v0] Play error:", err);
+    });
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+      video.removeEventListener('error', handleError);
+      video.removeEventListener('canplay', handleCanPlay);
+    };
   }, [currentPhase]);
 
   return (
@@ -69,8 +91,10 @@ const CelebrationVideoPlayer = () => {
             muted
             playsInline
             autoPlay
-            preload="metadata"
+            preload="auto"
+            crossOrigin="anonymous"
             onEnded={handleVideoEnd}
+            onError={() => setHasError(true)}
             className="w-full h-auto aspect-[3/4] object-cover"
           />
         )}
