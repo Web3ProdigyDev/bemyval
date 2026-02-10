@@ -9,20 +9,17 @@ const VideoPlayer = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    const handleError = (e: Event) => {
-      console.log("[v0] Video error:", e);
+    const handleError = () => {
       setHasError(true);
     };
 
     const handleCanPlay = () => {
-      console.log("[v0] Video can play");
       setHasError(false);
     };
 
     // Timeout: if video can't play within 8s, show poster fallback
     const timeout = setTimeout(() => {
       if (video.readyState < 3) {
-        console.log("[v0] Video timeout - readyState:", video.readyState);
         setHasError(true);
       }
     }, 8000);
@@ -32,9 +29,7 @@ const VideoPlayer = () => {
     
     // Reset the video to ensure it loads properly
     video.load();
-    video.play().catch((err) => {
-      console.log("[v0] Play error:", err);
-    });
+    video.play().catch(() => {});
 
     return () => {
       clearTimeout(timeout);

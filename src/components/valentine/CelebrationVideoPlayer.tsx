@@ -15,7 +15,6 @@ const CelebrationVideoPlayer = () => {
   };
 
   const handleVideoEnd = useCallback(() => {
-    console.log("[v0] Video ended, currentPhase:", currentPhase);
     switch (currentPhase) {
       case 'video2-1':
         setCurrentPhase('video2-2');
@@ -26,19 +25,17 @@ const CelebrationVideoPlayer = () => {
       case 'video3':
         if (videoRef.current) {
           videoRef.current.currentTime = 0;
-          videoRef.current.play().catch(err => console.log("[v0] Play error:", err));
+          videoRef.current.play().catch(() => {});
         }
         break;
     }
   }, [currentPhase]);
 
-  const handleError = (e: Event) => {
-    console.log("[v0] Video error:", e);
+  const handleError = () => {
     setHasError(true);
   };
 
   const handleCanPlay = () => {
-    console.log("[v0] Video can play, phase:", currentPhase);
     setHasError(false);
   };
 
@@ -55,15 +52,12 @@ const CelebrationVideoPlayer = () => {
     // Timeout for slow network
     const timeout = setTimeout(() => {
       if (video.readyState < 3) {
-        console.log("[v0] Video timeout - readyState:", video.readyState, "phase:", currentPhase);
         setHasError(true);
       }
     }, 10000);
 
     video.load();
-    video.play().catch((err) => {
-      console.log("[v0] Play error:", err);
-    });
+    video.play().catch(() => {});
 
     return () => {
       clearTimeout(timeout);
