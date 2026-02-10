@@ -190,14 +190,18 @@ export const afterCelebrationTitles = [
 ];
 
 export const fallbackSubtitles = [
-  "You Just Made My Day!",
-  "My Heart Is So Full!",
-  "I'm On Cloud Nine!",
-  "Pure Magic Just Happened!",
-  "Something Beautiful Just Began!",
-  "Our Story Starts Here!",
-  "I'm So Happy Right Now!",
-  "This Moment Is Everything!"
+  "You just made me so happy!",
+  "My heart is overflowing with love!",
+  "I'm floating in happiness!",
+  "This is the best moment ever!",
+  "Something beautiful is starting!",
+  "Our love story begins now!",
+  "I'm smiling from my heart!",
+  "This moment means everything to me!",
+  "You make my heart skip a beat!",
+  "I'm the luckiest person alive!",
+  "My heart chose you!",
+  "Together, we're perfect!"
 ];
 
 export const loveMessages = [

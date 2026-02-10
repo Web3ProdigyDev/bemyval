@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { MessageCircle, Globe, Phone } from 'lucide-react';
+import { MessageCircle, Globe, Phone, ExternalLink } from 'lucide-react';
 import {
   getRandomItem,
   celebrationTitles,
@@ -256,16 +256,24 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                 <span className="text-primary/70 font-medium hidden sm:inline">
                   ✨ Made with love by
                 </span>
-                <a
+                <motion.a
                   href="https://inspireddevs.vercel.app"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:text-primary/80 font-bold transition-colors flex items-center gap-1"
+                  className="text-primary hover:text-primary/80 font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <Globe className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   <span className="hidden sm:inline">Inspired Devs</span>
                   <span className="sm:hidden">Devs</span>
-                </a>
+                  <motion.div
+                    animate={{ x: [0, 3, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <ExternalLink className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                  </motion.div>
+                </motion.a>
                 <span className="text-primary/30 hidden sm:inline">•</span>
                 <a
                   href={whatsappLink}

@@ -6,7 +6,13 @@ const celebrationMessages = [
   "So happy!", "Love wins 💖", "Finally!", "Yay!", "Best day ever",
   "💝", "You + Me", "Soulmates", "My love", "✨", "Perfect!",
   "💘", "I knew it!", "Dream come true", "Together 💕", "Lucky me!",
-  "🥰", "Heart eyes!", "Can't wait", "Always", "My Valentine 💌"
+  "🥰", "Heart eyes!", "Can't wait", "Always", "My Valentine 💌",
+  "Truly love you", "You're my everything", "So in love 💖", "Happy heart",
+  "Made for each other", "Pure love", "My soulmate", "Happiest ever",
+  "You complete me", "My whole world", "Forever and always", "Endless love",
+  "You're perfect", "My greatest joy", "Heart is full", "Love this feeling",
+  "Beautiful love", "My safe place", "You own my heart", "Meant to be",
+  "Deeply grateful", "My forever", "Never letting go", "This is home"
 ];
 
 interface SafePosition {
@@ -21,8 +27,8 @@ const FloatingMessages = () => {
     const positions: SafePosition[] = [];
     const zones: SafePosition['zone'][] = ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'left', 'right'];
     
-    // Generate 12-16 messages
-    const messageCount = 14;
+    // Generate more messages for better coverage
+    const messageCount = 24;
     
     for (let i = 0; i < messageCount; i++) {
       const zone = zones[i % zones.length];
@@ -77,20 +83,20 @@ const FloatingMessages = () => {
       {messages.map((msg, index) => (
         <motion.div
           key={msg.id}
-          className="absolute text-primary/60 font-medium text-xs sm:text-sm whitespace-nowrap"
+          className="absolute text-primary/70 font-bold text-sm sm:text-lg md:text-xl whitespace-nowrap drop-shadow-md"
           style={{
             left: `${msg.x}%`,
             top: `${msg.y}%`,
           }}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ 
-            opacity: [0, 0.7, 0.5, 0.7],
+            opacity: [0, 0.8, 0.6, 0.8, 0],
             scale: 1,
-            y: [0, -10, 0, -10, 0],
+            y: [0, -15, 0, -15, 0],
           }}
           transition={{
-            delay: index * 0.08,
-            duration: 4,
+            delay: index * 0.06,
+            duration: 5,
             repeat: Infinity,
             repeatType: "loop",
             ease: "easeInOut",

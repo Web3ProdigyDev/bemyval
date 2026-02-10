@@ -237,6 +237,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
                   opacity: Math.max(noScale, 0.6),
                 }}
                 onMouseEnter={!isMobile ? (e) => moveNoButton(e) : undefined}
+                onMouseMove={!isMobile ? (e) => moveNoButton(e) : undefined}
                 onTouchStart={isMobile ? (e) => moveNoButton(e) : undefined}
                 onClick={(e) => {
                   e.preventDefault();
