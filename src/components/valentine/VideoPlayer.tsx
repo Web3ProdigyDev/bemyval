@@ -1,16 +1,24 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const VideoPlayer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (video) {
-      video.play().catch(() => {
-        // Autoplay might be blocked, that's okay
-      });
-    }
+    if (!video) return;
+
+    // Timeout: if video can't play within 8s, show poster fallback
+    const timeout = setTimeout(() => {
+      if (video.readyState < 3) {
+        setHasError(true);
+      }
+    }, 8000);
+
+    video.play().catch(() => {});
+
+    return () => clearTimeout(timeout);
   }, []);
 
   return (
@@ -20,18 +28,23 @@ const VideoPlayer = () => {
       transition={{ duration: 0.5, delay: 0.3 }}
       className="w-full max-w-[260px] mx-auto"
     >
-      {/* Video wrapper - fully responsive, rounded corners */}
       <div className="w-full rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20 bg-muted">
-        <video
-          ref={videoRef}
-          src="/videos/video1.mp4"
-          muted
-          playsInline
-          autoPlay
-          loop
-          preload="auto"
-          className="w-full h-auto aspect-[3/4] object-cover"
-        />
+        {hasError ? (
+          <div className="w-full aspect-[3/4] flex items-center justify-center bg-primary/10 text-4xl">
+            💕🎥
+          </div>
+        ) : (
+          <video
+            ref={videoRef}
+            src="/videos/video1.mp4"
+            muted
+            playsInline
+            autoPlay
+            loop
+            preload="metadata"
+            className="w-full h-auto aspect-[3/4] object-cover"
+          />
+        )}
       </div>
     </motion.div>
   );

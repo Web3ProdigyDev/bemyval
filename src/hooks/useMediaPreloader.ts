@@ -41,10 +41,10 @@ export const useMediaPreloader = () => {
       }
     };
 
-    // Preload videos
+    // Preload videos - use 'metadata' to avoid downloading full file on slow networks
     const preloadVideo = (src: string, name: string) => {
       const video = document.createElement('video');
-      video.preload = 'auto';
+      video.preload = 'metadata';
       video.muted = true;
       video.playsInline = true;
       

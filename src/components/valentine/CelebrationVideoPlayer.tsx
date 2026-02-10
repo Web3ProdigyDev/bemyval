@@ -5,6 +5,7 @@ type VideoPhase = 'video2-1' | 'video2-2' | 'video3';
 
 const CelebrationVideoPlayer = () => {
   const [currentPhase, setCurrentPhase] = useState<VideoPhase>('video2-1');
+  const [hasError, setHasError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const videoSources: Record<VideoPhase, string> = {
@@ -22,7 +23,6 @@ const CelebrationVideoPlayer = () => {
         setCurrentPhase('video3');
         break;
       case 'video3':
-        // Loop video3
         if (videoRef.current) {
           videoRef.current.currentTime = 0;
           videoRef.current.play();
@@ -33,12 +33,21 @@ const CelebrationVideoPlayer = () => {
 
   useEffect(() => {
     const video = videoRef.current;
-    if (video) {
-      video.load();
-      video.play().catch(() => {
-        // Autoplay might be blocked, that's okay
-      });
-    }
+    if (!video) return;
+
+    setHasError(false);
+
+    // Timeout for slow network
+    const timeout = setTimeout(() => {
+      if (video.readyState < 3) {
+        setHasError(true);
+      }
+    }, 10000);
+
+    video.load();
+    video.play().catch(() => {});
+
+    return () => clearTimeout(timeout);
   }, [currentPhase]);
 
   return (
@@ -48,18 +57,23 @@ const CelebrationVideoPlayer = () => {
       transition={{ duration: 0.5 }}
       className="w-full max-w-[260px] mx-auto"
     >
-      {/* Video wrapper - fully responsive */}
       <div className="w-full rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20 bg-muted">
-        <video
-          ref={videoRef}
-          src={videoSources[currentPhase]}
-          muted
-          playsInline
-          autoPlay
-          preload="auto"
-          onEnded={handleVideoEnd}
-          className="w-full h-auto aspect-[3/4] object-cover"
-        />
+        {hasError ? (
+          <div className="w-full aspect-[3/4] flex items-center justify-center bg-primary/10 text-4xl">
+            💕🎬
+          </div>
+        ) : (
+          <video
+            ref={videoRef}
+            src={videoSources[currentPhase]}
+            muted
+            playsInline
+            autoPlay
+            preload="metadata"
+            onEnded={handleVideoEnd}
+            className="w-full h-auto aspect-[3/4] object-cover"
+          />
+        )}
       </div>
     </motion.div>
   );
