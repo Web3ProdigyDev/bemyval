@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     
-    <!-- Preload critical media assets -->
-    <link rel="preload" href="/videos/video1.mp4" as="video" type="video/mp4" />
-    <link rel="preload" href="/audio/bg-music.mp3" as="audio" type="audio/mpeg" />
-    
-    <!-- Prefetch celebration videos (lower priority) -->
+    <!-- Prefetch media assets (non-blocking, lower priority) -->
+    <link rel="prefetch" href="/videos/video1.mp4" as="video" type="video/mp4" />
+    <link rel="prefetch" href="/audio/bg-music.mp3" as="audio" type="audio/mpeg" />
     <link rel="prefetch" href="/videos/video2.mp4" as="video" type="video/mp4" />
     <link rel="prefetch" href="/videos/video3.mp4" as="video" type="video/mp4" />
     

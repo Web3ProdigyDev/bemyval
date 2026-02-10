@@ -234,16 +234,24 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
             className="w-full py-4 px-4"
           >
             <div className="flex flex-col items-center justify-center">
-              <motion.div
+            <motion.div
                 className="flex flex-wrap items-center justify-center gap-3 bg-card/80 backdrop-blur-md border border-primary/30 rounded-2xl px-4 py-3 shadow-valentine"
                 animate={{
+                  x: [0, -3, 3, -2, 2, 0],
+                  rotate: [0, -1.5, 1.5, -1, 1, 0],
                   boxShadow: [
                     "0 4px 20px rgba(255, 107, 138, 0.2)",
-                    "0 4px 30px rgba(255, 107, 138, 0.35)",
+                    "0 4px 35px rgba(255, 107, 138, 0.5)",
                     "0 4px 20px rgba(255, 107, 138, 0.2)",
-                  ]
+                  ],
+                  scale: [1, 1.02, 1, 1.01, 1],
                 }}
-                transition={{ duration: 2, repeat: Infinity }}
+                transition={{
+                  duration: 1.8,
+                  repeat: Infinity,
+                  repeatDelay: 0.5,
+                  ease: "easeInOut",
+                }}
               >
                 <span className="text-primary/70 text-xs sm:text-sm font-medium">
                   ✨ Made with love by
