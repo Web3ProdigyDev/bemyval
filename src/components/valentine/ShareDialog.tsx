@@ -30,7 +30,7 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
   const generateShareLink = () => {
     if (!recipientName.trim()) return '';
     
-    // Use encoded, shorter params: r=recipient, m=message, s=sender
+    // Use encoded, shorter params: r=recipient, m=message, s=sender, p=phone
     const params = new URLSearchParams();
     params.set('r', encodeParam(recipientName.trim()));
     if (customMessage.trim()) {
@@ -38,6 +38,9 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
     }
     if (!isAnonymous && senderName.trim()) {
       params.set('s', encodeParam(senderName.trim()));
+    }
+    if (!isAnonymous && senderPhone.trim()) {
+      params.set('p', encodeParam(senderPhone.trim()));
     }
     return `${PUBLISHED_URL}?${params.toString()}`;
   };

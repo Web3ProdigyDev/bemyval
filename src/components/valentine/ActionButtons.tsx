@@ -89,13 +89,7 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
               >
                 <Share2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
               </motion.span>
-              <span className="whitespace-nowrap">Share</span>
-              <motion.span
-                animate={{ scale: [1, 1.3, 1] }}
-                transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
-              >
-                <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
-              </motion.span>
+              <span className="whitespace-nowrap">Share the Love</span>
             </motion.button>
           )}
         </AnimatePresence>

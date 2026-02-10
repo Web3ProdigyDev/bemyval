@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
 
 const celebrationMessages = [
   "💕", "You're mine!", "Forever yours", "❤️", "My heart! 💗",
@@ -78,43 +77,46 @@ const FloatingMessages = () => {
     }));
   }, [messagePositions]);
 
+  // Create CSS keyframes dynamically
+  const style = `
+    @keyframes floatMessage {
+      0% { opacity: 0; transform: scale(0.7) translateY(0); }
+      20% { opacity: 0.85; transform: scale(1) translateY(-5px); }
+      40% { opacity: 0.85; transform: scale(1) translateY(-10px); }
+      50% { opacity: 0.7; transform: scale(1) translateY(-15px); }
+      60% { opacity: 0.85; transform: scale(1) translateY(-10px); }
+      80% { opacity: 0.85; transform: scale(1) translateY(-5px); }
+      100% { opacity: 0; transform: scale(0.7) translateY(0); }
+    }
+  `;
+
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      {messages.map((msg, index) => {
-        // Randomize delay for each message so they don't start at the same time
-        const randomDelay = Math.random() * 3;
-        // Randomize duration between 6-8 seconds for variety
-        const randomDuration = 6 + Math.random() * 2;
-        
-        return (
-          <motion.div
-            key={msg.id}
-            className="absolute text-primary/75 font-extrabold text-base sm:text-2xl md:text-3xl whitespace-nowrap drop-shadow-lg"
-            style={{
-              left: `${msg.x}%`,
-              top: `${msg.y}%`,
-              textShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
-            }}
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ 
-              opacity: [0, 0.85, 0.7, 0.85, 0],
-              scale: [0.7, 1, 1, 1, 0.7],
-              y: [0, -20, 0, -20, 0],
-            }}
-            transition={{
-              delay: randomDelay,
-              duration: randomDuration,
-              repeat: Infinity,
-              repeatType: "loop",
-              repeatDelay: 0.5,
-              ease: "easeInOut",
-            }}
-          >
-            {msg.text}
-          </motion.div>
-        );
-      })}
-    </div>
+    <>
+      <style>{style}</style>
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {messages.map((msg, index) => {
+          // Randomize delay so they don't start at the same time
+          const randomDelay = Math.random() * 3;
+          // Randomize duration between 6-8 seconds for variety
+          const randomDuration = 6 + Math.random() * 2;
+          
+          return (
+            <div
+              key={msg.id}
+              className="absolute text-primary/75 font-extrabold text-base sm:text-2xl md:text-3xl whitespace-nowrap drop-shadow-lg"
+              style={{
+                left: `${msg.x}%`,
+                top: `${msg.y}%`,
+                textShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+                animation: `floatMessage ${randomDuration}s ease-in-out ${randomDelay}s infinite`,
+              }}
+            >
+              {msg.text}
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 };
 

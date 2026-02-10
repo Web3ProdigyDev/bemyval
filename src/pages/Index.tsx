@@ -57,10 +57,11 @@ const Index = () => {
 
   // Parse URL parameters - support both old and new encoded format
   const urlParams = useMemo(() => {
-    // Try new encoded format first (r, m, s)
+    // Try new encoded format first (r, m, s, p)
     let recipientName = searchParams.get('r') ? decodeParam(searchParams.get('r')!) : null;
     let customMessage = searchParams.get('m') ? decodeParam(searchParams.get('m')!) : null;
     let senderName = searchParams.get('s') ? decodeParam(searchParams.get('s')!) : null;
+    let senderPhone = searchParams.get('p') ? decodeParam(searchParams.get('p')!) : null;
     
     // Fallback to old format (to, msg, from)
     if (!recipientName) recipientName = searchParams.get('to');
@@ -71,6 +72,7 @@ const Index = () => {
       recipientName: recipientName || undefined,
       customMessage: customMessage || undefined,
       senderName: senderName || undefined,
+      senderPhone: senderPhone || undefined,
     };
   }, [searchParams]);
 
@@ -140,6 +142,7 @@ const Index = () => {
             recipientName={urlParams.recipientName}
             customMessage={urlParams.customMessage}
             senderName={urlParams.senderName}
+            senderPhone={urlParams.senderPhone}
           />
         )}
       </AnimatePresence>
