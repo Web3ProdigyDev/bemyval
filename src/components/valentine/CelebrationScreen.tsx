@@ -21,6 +21,9 @@ interface CelebrationScreenProps {
   senderName?: string;
 }
 
+// Inspired Devs contact information
+const INSPIRED_DEVS_WHATSAPP = "+2349019459804";
+
 const CelebrationScreen = ({ recipientName, customMessage, senderName }: CelebrationScreenProps) => {
   const [showMessage, setShowMessage] = useState(false);
   const [showContact, setShowContact] = useState(false);
@@ -81,7 +84,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
     return () => clearInterval(interval);
   }, []);
 
-  const whatsappLink = `https://wa.me/2349019459804?text=${encodeURIComponent("Hi Inspired Devs! I saw your Valentine's website and I'd love something similar! 💕")}`;
+  const whatsappLink = `https://wa.me/${INSPIRED_DEVS_WHATSAPP.replace("+", "")}?text=${encodeURIComponent("Hi Inspired Devs! I saw your Valentine's website and I'd love something similar! 💕")}`;
 
   return (
     <div className="relative z-10 flex flex-col min-h-screen">
@@ -237,7 +240,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               {/* WhatsApp Floating Button - Only if sender has phone */}
               {senderName && (
                 <motion.a
-                  href={`https://wa.me/2349019459804?text=${encodeURIComponent(`Hi! I received a Valentine's surprise from ${senderName} and I love your work! 💕`)}`}
+                  href={`https://wa.me/${INSPIRED_DEVS_WHATSAPP.replace("+", "")}?text=${encodeURIComponent(`Hi! I received a Valentine's surprise from ${senderName} and I love your work! 💕`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="fixed bottom-6 left-6 sm:bottom-8 sm:left-8 z-40 bg-[#25D366] text-white rounded-full p-4 shadow-valentine flex items-center justify-center"
