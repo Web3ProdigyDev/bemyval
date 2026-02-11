@@ -43,7 +43,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
   useEffect(() => {
     const duration = 3000;
     const animationEnd = Date.now() + duration;
-    
+
     // Play initial confetti sound
     playConfettiSound();
 
@@ -55,7 +55,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
       }
 
       const particleCount = 25 * (timeLeft / duration);
-      
+
       // Play sound on each burst
       if (Math.random() > 0.6) {
         playConfettiSound();
@@ -90,7 +90,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
     <div className="relative z-10 w-full h-screen flex flex-col overflow-y-auto">
       {/* Floating celebration messages */}
       <FloatingMessages />
-      
+
       {/* Main Content - Flex column, natural stacking */}
       <main className="w-full flex flex-col items-center justify-center px-3 py-4 sm:px-4 sm:py-6">
         <AnimatePresence mode="wait">
@@ -146,7 +146,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               </motion.div>
 
               {/* Title */}
-              <motion.h2 
+              <motion.h2
                 className="font-romantic text-lg sm:text-xl md:text-2xl text-primary mb-1 text-center"
               >
                 {recipientName ? `${recipientName}, ${content.afterTitle}` : content.fallbackSubtitle}
@@ -165,7 +165,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               )}
 
               {/* Love message text */}
-              <motion.p 
+              <motion.p
                 className="text-xs text-foreground mb-2 leading-relaxed text-center px-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -173,7 +173,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               >
                 {content.loveMessage}
               </motion.p>
-              
+
               {/* Video Player - Separate wrapper, fully responsive */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -187,7 +187,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               {/* Text Container - All copy below the video */}
               <div className="flex flex-col items-center text-center w-full space-y-1">
                 {/* Closing message */}
-                <motion.p 
+                <motion.p
                   className="text-sm sm:text-base md:text-lg text-primary font-semibold"
                 >
                   {content.closing}{recipientName ? `, ${recipientName}` : ""}
@@ -229,7 +229,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            transition={{ 
+            transition={{
               type: "spring",
               stiffness: 120,
               damping: 15,
@@ -258,7 +258,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                   </motion.div>
                 </motion.a>
               )}
-              
+
               {/* Contact Card */}
               <motion.div
                 className="flex flex-col items-center justify-center gap-2 bg-card/80 backdrop-blur-md border border-primary/30 rounded-xl px-3 py-2 shadow-valentine w-full max-w-sm"
@@ -280,7 +280,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                 }}
               >
                 <span className="text-primary/70 text-xs font-medium">
-                  ✨ Made with love by
+                  Made with 💕 by Inspired Devs
                 </span>
                 <div className="flex items-center gap-1.5 flex-wrap justify-center">
                   <a
