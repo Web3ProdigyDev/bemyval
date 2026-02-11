@@ -20,18 +20,75 @@ export type Database = {
           id: string
           name: string
           phone: string
+          custom_text?: string | null
+          recipient_name?: string | null
+          sender_name?: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           name: string
           phone: string
+          custom_text?: string | null
+          recipient_name?: string | null
+          sender_name?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
           phone?: string
+          custom_text?: string | null
+          recipient_name?: string | null
+          sender_name?: string | null
+        }
+        Relationships: []
+      }
+      valentine_analytics: {
+        Row: {
+          id: string
+          session_id: string
+          recipient_name: string | null
+          sender_name: string | null
+          custom_message: string | null
+          page_view: boolean
+          said_yes: boolean
+          said_no_count: number
+          shared: boolean
+          screen_changes: string[] | null
+          created_at: string
+          updated_at: string
+          last_interaction: string
+        }
+        Insert: {
+          id?: string
+          session_id: string
+          recipient_name?: string | null
+          sender_name?: string | null
+          custom_message?: string | null
+          page_view?: boolean
+          said_yes?: boolean
+          said_no_count?: number
+          shared?: boolean
+          screen_changes?: string[] | null
+          created_at?: string
+          updated_at?: string
+          last_interaction?: string
+        }
+        Update: {
+          id?: string
+          session_id?: string
+          recipient_name?: string | null
+          sender_name?: string | null
+          custom_message?: string | null
+          page_view?: boolean
+          said_yes?: boolean
+          said_no_count?: number
+          shared?: boolean
+          screen_changes?: string[] | null
+          created_at?: string
+          updated_at?: string
+          last_interaction?: string
         }
         Relationships: []
       }

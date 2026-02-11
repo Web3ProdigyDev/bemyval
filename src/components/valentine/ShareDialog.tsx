@@ -48,7 +48,28 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
   const shareLink = generateShareLink();
 
   const saveSenderInfo = async () => {
-    if (isAnonymous || !senderName.trim() || !senderPhone.trim()) return true;
+    // Only save if they provided info (anonymous users don't need to)
+    if (isAnonymous) {
+      // Still save recipient and message in analytics
+      try {
+        const { error } = await supabase
+          .from('valentine_visitors')
+          .insert({
+            name: 'Anonymous',
+            phone: 'N/A',
+            recipient_name: recipientName.trim().slice(0, 100),
+            custom_text: customMessage.trim().slice(0, 100),
+          });
+        
+        if (error && error.code !== 'PGRST116') throw error; // Ignore if table doesn't exist
+        return true;
+      } catch (error) {
+        console.error('Error saving anonymous share:', error);
+        return true; // Gracefully degrade
+      }
+    }
+    
+    if (!senderName.trim() || !senderPhone.trim()) return true;
     
     const phoneRegex = /^[\d\s\-+()]{7,20}$/;
     if (!phoneRegex.test(senderPhone.trim())) {
@@ -66,13 +87,16 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
         .insert({
           name: senderName.trim().slice(0, 100),
           phone: senderPhone.trim().slice(0, 20),
+          recipient_name: recipientName.trim().slice(0, 100),
+          sender_name: senderName.trim().slice(0, 100),
+          custom_text: customMessage.trim().slice(0, 100),
         });
 
-      if (error) throw error;
+      if (error && error.code !== 'PGRST116') throw error; // Ignore if table doesn't exist
       return true;
     } catch (error) {
       console.error('Error saving sender:', error);
-      return true;
+      return true; // Gracefully degrade - don't block sharing
     }
   };
 

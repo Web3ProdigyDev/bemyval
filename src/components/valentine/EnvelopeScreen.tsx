@@ -55,11 +55,11 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.1 }}
       transition={{ type: "spring", bounce: 0.3 }}
-      className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-4 py-4 sm:py-6"
+      className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-4 py-4 sm:py-6 overflow-x-hidden"
     >
       {/* Title changes when opening */}
       <motion.h1
-        className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2"
+        className="text-lg sm:text-2xl md:text-3xl font-bold text-center mb-2 px-2"
         animate={{ 
           color: isOpening ? 'hsl(var(--primary))' : 'hsl(var(--foreground))'
         }}

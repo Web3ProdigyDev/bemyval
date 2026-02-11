@@ -80,10 +80,10 @@ const FloatingMessages = () => {
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       {messages.map((msg, index) => {
-        // Stagger delays for endless effect
-        const baseDelay = (index % 8) * 0.15;
-        const cycle = Math.floor(index / 8);
-        const totalDelay = cycle * 3 + baseDelay;
+        // Stagger with random delays and durations for organic effect
+        const randomDelay = Math.random() * 8;
+        const randomDuration = 5 + Math.random() * 3;
+        const randomRepeatDelay = 2 + Math.random() * 4;
         
         return (
           <motion.div
@@ -92,19 +92,21 @@ const FloatingMessages = () => {
             style={{
               left: `${msg.x}%`,
               top: `${msg.y}%`,
+              pointerEvents: 'none',
             }}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ 
-              opacity: [0, 0.8, 0.6, 0],
-              scale: [0.8, 1.1, 1, 0.9],
-              y: [0, -15, -25],
+              opacity: [0, 0.7, 0.5, 0],
+              scale: [0.8, 1.2, 1, 0.8],
+              y: [0, -20, -35],
+              x: [0, (Math.random() - 0.5) * 20, 0],
             }}
             transition={{
-              delay: baseDelay,
-              duration: 6,
+              delay: randomDelay,
+              duration: randomDuration,
               repeat: Infinity,
               repeatType: "loop",
-              repeatDelay: 2,
+              repeatDelay: randomRepeatDelay,
               ease: "easeInOut",
             }}
           >
