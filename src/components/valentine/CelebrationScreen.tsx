@@ -21,6 +21,9 @@ interface CelebrationScreenProps {
   senderName?: string;
 }
 
+// Inspired Devs contact information
+const INSPIRED_DEVS_WHATSAPP = "+2349019459804";
+
 const CelebrationScreen = ({ recipientName, customMessage, senderName }: CelebrationScreenProps) => {
   const [showMessage, setShowMessage] = useState(false);
   const [showContact, setShowContact] = useState(false);
@@ -81,15 +84,15 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
     return () => clearInterval(interval);
   }, []);
 
-  const whatsappLink = `https://wa.me/2349019459804?text=${encodeURIComponent("Hi Inspired Devs! I saw your Valentine's website and I'd love something similar! 💕")}`;
+  const whatsappLink = `https://wa.me/${INSPIRED_DEVS_WHATSAPP.replace("+", "")}?text=${encodeURIComponent("Hi Inspired Devs! I saw your Valentine's website and I'd love something similar! 💕")}`;
 
   return (
-    <div className="relative z-10 flex flex-col min-h-screen">
+    <div className="relative z-10 w-full h-screen flex flex-col overflow-y-auto">
       {/* Floating celebration messages */}
       <FloatingMessages />
       
       {/* Main Content - Flex column, natural stacking */}
-      <main className="flex-1 flex flex-col items-center justify-center px-3 py-4 sm:px-4 sm:py-6">
+      <main className="w-full flex flex-col items-center justify-center px-3 py-4 sm:px-4 sm:py-6">
         <AnimatePresence mode="wait">
           {!showMessage && (
             <motion.div
@@ -101,21 +104,21 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               className="flex flex-col items-center text-center w-full max-w-xl"
             >
               <motion.div
-                className="text-5xl sm:text-6xl md:text-7xl mb-4"
+                className="text-4xl sm:text-5xl md:text-6xl mb-2"
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 0.5, repeat: Infinity }}
               >
                 🎉💕🎉
               </motion.div>
               <motion.h1
-                className="font-romantic text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary mb-2 drop-shadow-lg"
+                className="font-romantic text-xl sm:text-2xl md:text-3xl lg:text-4xl text-primary mb-1 drop-shadow-lg"
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 0.6, repeat: Infinity }}
               >
                 {content.celebrationTitle}
               </motion.h1>
               <motion.p
-                className="text-lg sm:text-xl md:text-2xl text-foreground font-medium"
+                className="text-sm sm:text-base md:text-lg text-foreground font-medium"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -135,7 +138,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
             >
               {/* Emoji Header */}
               <motion.div
-                className="text-3xl sm:text-4xl mb-2"
+                className="text-2xl sm:text-3xl mb-1"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
@@ -144,7 +147,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
 
               {/* Title */}
               <motion.h2 
-                className="font-romantic text-xl sm:text-2xl md:text-3xl text-primary mb-2 text-center"
+                className="font-romantic text-lg sm:text-xl md:text-2xl text-primary mb-1 text-center"
               >
                 {recipientName ? `${recipientName}, ${content.afterTitle}` : content.fallbackSubtitle}
               </motion.h2>
@@ -155,15 +158,15 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="w-full bg-primary/10 rounded-xl p-3 mb-3 border border-primary/20"
+                  className="w-full bg-primary/10 rounded-lg p-2 mb-2 border border-primary/20"
                 >
-                  <p className="text-foreground italic text-sm sm:text-base text-center">"{customMessage}"</p>
+                  <p className="text-foreground italic text-xs sm:text-sm text-center">"{customMessage}"</p>
                 </motion.div>
               )}
 
               {/* Love message text */}
               <motion.p 
-                className="text-xs sm:text-sm md:text-base text-foreground mb-3 leading-relaxed text-center px-2"
+                className="text-xs text-foreground mb-2 leading-relaxed text-center px-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -176,16 +179,16 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="w-full mb-3"
+                className="w-full mb-2"
               >
                 <CelebrationVideoPlayer />
               </motion.div>
 
               {/* Text Container - All copy below the video */}
-              <div className="flex flex-col items-center text-center w-full space-y-2">
+              <div className="flex flex-col items-center text-center w-full space-y-1">
                 {/* Closing message */}
                 <motion.p 
-                  className="text-base sm:text-lg md:text-xl text-primary font-semibold"
+                  className="text-sm sm:text-base md:text-lg text-primary font-semibold"
                 >
                   {content.closing}{recipientName ? `, ${recipientName}` : ""}
                 </motion.p>
@@ -195,7 +198,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="text-sm sm:text-base text-foreground/80 font-medium"
+                  className="text-xs sm:text-sm text-foreground/80 font-medium"
                 >
                   With all my love! 🌹
                 </motion.p>
@@ -206,9 +209,9 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="pt-2 border-t border-primary/20 w-full max-w-xs"
+                    className="pt-1 border-t border-primary/20 w-full max-w-xs"
                   >
-                    <p className="text-xs sm:text-sm text-foreground">
+                    <p className="text-xs text-foreground">
                       With love from <span className="text-primary font-bold">{senderName}</span> 💝
                     </p>
                   </motion.div>
@@ -231,16 +234,16 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               stiffness: 120,
               damping: 15,
             }}
-            className="w-full py-4 px-4 mb-2"
+            className="w-full py-2 px-3 sm:px-4 mb-1"
           >
-            <div className="flex flex-col items-center justify-center gap-3">
+            <div className="flex flex-col items-center justify-center gap-2">
               {/* WhatsApp Floating Button - Only if sender has phone */}
               {senderName && (
                 <motion.a
-                  href={`https://wa.me/2349019459804?text=${encodeURIComponent(`Hi! I received a Valentine's surprise from ${senderName} and I love your work! 💕`)}`}
+                  href={`https://wa.me/${INSPIRED_DEVS_WHATSAPP.replace("+", "")}?text=${encodeURIComponent(`Hi! I received a Valentine's surprise from ${senderName} and I love your work! 💕`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="fixed bottom-6 left-6 sm:bottom-8 sm:left-8 z-40 bg-[#25D366] text-white rounded-full p-4 shadow-valentine flex items-center justify-center"
+                  className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 bg-[#25D366] text-white rounded-full p-3 shadow-valentine flex items-center justify-center"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   whileHover={{ scale: 1.15, boxShadow: "0 8px 30px rgba(37, 211, 102, 0.4)" }}
@@ -251,14 +254,14 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >
-                    <MessageCircle className="w-6 h-6" />
+                    <MessageCircle className="w-5 h-5" />
                   </motion.div>
                 </motion.a>
               )}
               
               {/* Contact Card */}
               <motion.div
-                className="flex flex-col items-center justify-center gap-3 bg-card/80 backdrop-blur-md border border-primary/30 rounded-2xl px-4 py-3 shadow-valentine w-full max-w-sm"
+                className="flex flex-col items-center justify-center gap-2 bg-card/80 backdrop-blur-md border border-primary/30 rounded-xl px-3 py-2 shadow-valentine w-full max-w-sm"
                 animate={{
                   x: [0, -3, 3, -2, 2, 0],
                   rotate: [0, -1.5, 1.5, -1, 1, 0],
@@ -276,19 +279,19 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                   ease: "easeInOut",
                 }}
               >
-                <span className="text-primary/70 text-xs sm:text-sm font-medium">
+                <span className="text-primary/70 text-xs font-medium">
                   ✨ Made with love by
                 </span>
-                <div className="flex items-center gap-2 flex-wrap justify-center">
+                <div className="flex items-center gap-1.5 flex-wrap justify-center">
                   <a
                     href="https://inspireddevs.vercel.app"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:text-primary/80 text-xs sm:text-sm font-bold transition-colors flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg hover:bg-primary/20"
+                    className="text-primary hover:text-primary/80 text-xs font-bold transition-colors flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-lg hover:bg-primary/20"
                   >
-                    <Globe className="w-3.5 h-3.5" />
+                    <Globe className="w-3 h-3" />
                     <span>Inspired Devs</span>
-                    <ExternalLink className="w-3 h-3" />
+                    <ExternalLink className="w-2.5 h-2.5" />
                   </a>
                 </div>
               </motion.div>
