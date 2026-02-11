@@ -39,11 +39,11 @@ const GiftBoxScreen = ({ onOpen }: GiftBoxScreenProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.2 }}
-      className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4"
+      className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-4 py-4 sm:py-6"
     >
       {/* Mysterious title - NOT Valentine themed */}
       <motion.h1
-        className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground text-center mb-2"
+        className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground text-center mb-2"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
@@ -52,7 +52,7 @@ const GiftBoxScreen = ({ onOpen }: GiftBoxScreenProps) => {
       </motion.h1>
       
       <motion.p
-        className="text-muted-foreground text-center text-sm sm:text-base mb-8"
+        className="text-muted-foreground text-center text-xs sm:text-sm mb-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
@@ -161,7 +161,7 @@ const GiftBoxScreen = ({ onOpen }: GiftBoxScreenProps) => {
       <AnimatePresence>
         {showHint && !isOpening && (
           <motion.p
-            className="mt-8 text-muted-foreground text-sm sm:text-base flex items-center gap-2"
+            className="mt-4 text-muted-foreground text-xs sm:text-sm flex items-center gap-2"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}

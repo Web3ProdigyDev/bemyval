@@ -32,13 +32,11 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
     setIsOpening(true);
     setShowVolumeHint(false);
     
+    // Start music immediately when envelope opens
+    onMusicStart();
+    
     // Play romantic envelope sound
     playEnvelopeOpenSound();
-    
-    // Start music when envelope opens
-    setTimeout(() => {
-      onMusicStart();
-    }, 400);
     
     // Show letter rising
     setTimeout(() => {
@@ -57,11 +55,11 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.1 }}
       transition={{ type: "spring", bounce: 0.3 }}
-      className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4"
+      className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-4 py-4 sm:py-6"
     >
       {/* Title changes when opening */}
       <motion.h1
-        className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-2"
+        className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2"
         animate={{ 
           color: isOpening ? 'hsl(var(--primary))' : 'hsl(var(--foreground))'
         }}
@@ -80,7 +78,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
 
       {recipientName && (
         <motion.p
-          className="text-lg sm:text-xl text-muted-foreground mb-6"
+          className="text-base sm:text-lg text-muted-foreground mb-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
@@ -91,7 +89,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
 
       {/* Envelope Container */}
       <motion.div
-        className="relative cursor-pointer mt-4"
+        className="relative cursor-pointer mt-2"
         onClick={handleOpen}
         whileHover={!isOpening ? { scale: 1.03, y: -5 } : {}}
         whileTap={!isOpening ? { scale: 0.98 } : {}}
@@ -218,20 +216,20 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       <AnimatePresence>
         {showVolumeHint && !isOpening && (
           <motion.div
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-border/50"
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg border border-border/50"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ delay: 0.5 }}
           >
-            <p className="text-muted-foreground text-xs sm:text-sm flex items-center gap-2">
+            <p className="text-muted-foreground text-xs flex items-center gap-2">
               <motion.span
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
               >
                 🔊
               </motion.span>
-              Turn up your volume for the best experience
+              Turn up volume
             </p>
           </motion.div>
         )}
@@ -241,7 +239,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       <AnimatePresence>
         {showHint && !isOpening && (
           <motion.p
-            className="mt-10 text-muted-foreground text-sm sm:text-base flex items-center gap-2"
+            className="mt-4 text-muted-foreground text-xs sm:text-sm flex items-center gap-2"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}

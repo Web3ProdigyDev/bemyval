@@ -1,6 +1,6 @@
 import { forwardRef, useRef, useImperativeHandle, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX, Heart } from 'lucide-react';
+import { Volume2, VolumeX, Share2 } from 'lucide-react';
 
 export interface ActionButtonsHandle {
   play: () => void;
@@ -63,7 +63,7 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
           {showShareButton && (
             <motion.button
               onClick={onShareClick}
-              className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-valentine-gradient text-primary-foreground px-4 py-2.5 sm:px-5 sm:py-3 rounded-full shadow-valentine flex items-center gap-2 font-bold text-sm sm:text-base"
+              className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-valentine-gradient text-primary-foreground px-4 py-2.5 sm:px-5 sm:py-3 rounded-full shadow-valentine flex items-center gap-2.5 font-bold text-sm sm:text-base"
               initial={{ opacity: 0, scale: 0, y: -20 }}
               animate={{
                 opacity: 1,
@@ -85,16 +85,9 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
               >
-                <Heart className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
               </motion.span>
-              <span>Spread the Love</span>
-              <motion.span
-                className="text-sm"
-                animate={{ rotate: [0, 15, -15, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                💕
-              </motion.span>
+              <span>Share the Love</span>
             </motion.button>
           )}
         </AnimatePresence>
