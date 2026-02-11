@@ -26,7 +26,7 @@ const VideoPlayer = () => {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay: 0.3 }}
-      className="w-full max-w-[260px] mx-auto"
+      className="w-full max-w-[320px] mx-auto"
     >
       <div className="w-full rounded-2xl overflow-hidden shadow-valentine border-2 border-primary/20 bg-muted">
         {hasError ? (
@@ -41,8 +41,9 @@ const VideoPlayer = () => {
             playsInline
             autoPlay
             loop
-            preload="metadata"
+            preload="auto"
             className="w-full h-auto aspect-[3/4] object-cover"
+            crossOrigin="anonymous"
           />
         )}
       </div>

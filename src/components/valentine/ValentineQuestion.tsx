@@ -112,19 +112,19 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
   return (
     <div 
       ref={containerRef} 
-      className="relative z-10 flex flex-col min-h-screen px-4 py-6 sm:py-8 overflow-x-hidden"
+      className="relative z-10 flex flex-col min-h-screen px-3 py-4 sm:px-4 sm:py-6 overflow-x-hidden"
     >
       {/* Main Content - Flex column, natural stacking */}
-      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
+      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto gap-2">
         {/* Personalized greeting */}
         {recipientName && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-3"
+            className="text-center"
           >
-            <p className="text-lg sm:text-xl text-foreground font-medium">
+            <p className="text-base sm:text-lg text-foreground font-medium">
               Hey <span className="text-primary font-bold">{recipientName}</span>! 👋
             </p>
           </motion.div>
@@ -136,9 +136,9 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="text-center mb-2"
+            className="text-center"
           >
-            <p className="text-sm sm:text-base text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               From <span className="text-primary font-semibold">{senderName}</span> 💌
             </p>
           </motion.div>
@@ -150,9 +150,9 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="text-center mb-4 w-full"
+            className="text-center w-full"
           >
-            <p className="text-base sm:text-lg text-foreground/80 italic">
+            <p className="text-sm sm:text-base text-foreground/80 italic">
               "{customMessage}"
             </p>
           </motion.div>
@@ -163,10 +163,10 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
           initial={{ opacity: 0, y: -30, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.8, type: "spring" }}
-          className="text-center mb-4 w-full"
+          className="text-center w-full"
         >
           <motion.h1
-            className="font-romantic text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary mb-2 drop-shadow-lg leading-tight"
+            className="font-romantic text-xl sm:text-2xl md:text-3xl lg:text-4xl text-primary mb-1 drop-shadow-lg leading-tight"
             animate={{ 
               scale: [1, 1.02, 1],
             }}
@@ -179,7 +179,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
             {questionText}
           </motion.h1>
           <motion.div
-            className="text-3xl sm:text-4xl"
+            className="text-2xl sm:text-3xl"
             animate={{ 
               scale: [1, 1.2, 1],
               y: [0, -6, 0],
@@ -195,7 +195,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
         </motion.div>
 
         {/* Video Player - Separate wrapper, fully responsive */}
-        <div className="w-full mb-4">
+        <div className="w-full">
           <VideoPlayer />
         </div>
 
@@ -214,37 +214,33 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
         </AnimatePresence>
 
         {/* Buttons Container - Flexbox with gap */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full mt-2">
+        <div className="flex flex-col sm:flex-row gap-3 items-center justify-center w-full mt-1">
           {!showDoubleYes ? (
             <>
               {/* Yes Button */}
               <motion.button
                 onClick={handleYesClick}
-                className="bg-valentine-gradient text-primary-foreground font-bold py-3 px-8 rounded-full shadow-valentine relative overflow-hidden"
+                className="bg-valentine-gradient text-primary-foreground font-bold py-2.5 px-6 sm:py-3 sm:px-8 rounded-full shadow-valentine relative overflow-hidden"
                 style={{ transform: `scale(${yesScale})` }}
                 whileHover={{ scale: yesScale * 1.08 }}
                 whileTap={{ scale: yesScale * 0.95 }}
               >
-                <span className="text-lg sm:text-xl relative z-10">{content.yesButton}</span>
+                <span className="text-base sm:text-lg relative z-10">{content.yesButton}</span>
               </motion.button>
 
-              {/* No Button */}
+              {/* No Button - Disappears on hover and touch */}
               <motion.button
                 type="button"
-                className="bg-muted text-muted-foreground font-bold py-2.5 px-6 rounded-full"
+                className="bg-muted text-muted-foreground font-bold py-2 px-5 sm:py-2.5 sm:px-6 rounded-full transition-all text-sm sm:text-base"
                 style={{
                   transform: `translate(${noPosition.x}px, ${noPosition.y}px) scale(${noScale})`,
                   opacity: Math.max(noScale, 0.6),
                 }}
-                onMouseEnter={!isMobile ? (e) => moveNoButton(e) : undefined}
-                onTouchStart={isMobile ? (e) => moveNoButton(e) : undefined}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  moveNoButton(e);
-                }}
+                onMouseEnter={!isMobile ? moveNoButton : undefined}
+                onTouchStart={isMobile ? moveNoButton : undefined}
+                onClick={moveNoButton}
               >
-                <span className="text-base">No 😢</span>
+                <span>No 😢</span>
               </motion.button>
             </>
           ) : (
@@ -253,26 +249,26 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 200 }}
-              className="flex flex-col sm:flex-row gap-4 w-full justify-center items-center"
+              className="flex flex-col sm:flex-row gap-3 w-full justify-center items-center"
             >
               <motion.button
                 onClick={handleYesClick}
-                className="bg-valentine-gradient text-primary-foreground font-bold py-4 px-10 rounded-full shadow-valentine"
+                className="bg-valentine-gradient text-primary-foreground font-bold py-2.5 px-6 sm:py-3 sm:px-8 rounded-full shadow-valentine"
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span className="text-xl relative z-10">{content.doubleYes[0]}</span>
+                <span className="text-base sm:text-lg relative z-10">{content.doubleYes[0]}</span>
               </motion.button>
               
               <motion.button
                 onClick={handleYesClick}
-                className="bg-valentine-gradient text-primary-foreground font-bold py-4 px-10 rounded-full shadow-valentine"
+                className="bg-valentine-gradient text-primary-foreground font-bold py-2.5 px-6 sm:py-3 sm:px-8 rounded-full shadow-valentine"
                 animate={{ y: [0, -4, 0] }}
                 transition={{ duration: 1, repeat: Infinity }}
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span className="text-xl relative z-10">{content.doubleYes[1]}</span>
+                <span className="text-base sm:text-lg relative z-10">{content.doubleYes[1]}</span>
               </motion.button>
             </motion.div>
           )}
@@ -283,7 +279,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-4 text-foreground text-center font-medium text-sm"
+            className="mt-2 text-foreground text-center font-medium text-xs sm:text-sm"
           >
             {content.hintText}
           </motion.p>
@@ -293,7 +289,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-4 text-foreground text-lg font-medium text-center"
+            className="mt-2 text-foreground text-base sm:text-lg font-medium text-center"
           >
             {content.noEscape.replace(/!/, `, ${displayName}!`)}
           </motion.p>

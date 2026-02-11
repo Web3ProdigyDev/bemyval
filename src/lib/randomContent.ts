@@ -192,11 +192,11 @@ export const afterCelebrationTitles = [
 export const fallbackSubtitles = [
   "You Just Made My Day!",
   "My Heart Is So Full!",
-  "I'm On Cloud Nine!",
+  "I'm So Happy Right Now!",
   "Pure Magic Just Happened!",
   "Something Beautiful Just Began!",
   "Our Story Starts Here!",
-  "I'm So Happy Right Now!",
+  "I'm On Top of the World!",
   "This Moment Is Everything!"
 ];
 
