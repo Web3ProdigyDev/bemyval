@@ -90,9 +90,9 @@ const GiftBoxScreen = ({ onOpen }: GiftBoxScreenProps) => {
             
             {/* Shine effect */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent rounded-lg"
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent rounded-lg will-change-transform pointer-events-none"
+              animate={{ opacity: [0.2, 0.4, 0.2] }}
+              transition={{ duration: 2.5, repeat: Infinity }}
             />
           </motion.div>
 
@@ -114,16 +114,14 @@ const GiftBoxScreen = ({ onOpen }: GiftBoxScreenProps) => {
               
               {/* Bow */}
               <motion.div
-                className="absolute -top-6 left-1/2 -translate-x-1/2 text-4xl sm:text-5xl"
+                className="absolute -top-6 left-1/2 -translate-x-1/2 text-4xl sm:text-5xl will-change-transform"
                 animate={!isOpening ? { 
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 5, -5, 0]
+                  scale: [1, 1.05, 1],
                 } : {
-                  scale: 1.5,
-                  rotate: 180,
+                  scale: 1.3,
                   opacity: 0
                 }}
-                transition={isOpening ? { duration: 0.5 } : { duration: 2, repeat: Infinity }}
+                transition={isOpening ? { duration: 0.5 } : { duration: 2.5, repeat: Infinity }}
               >
                 🎀
               </motion.div>
@@ -134,21 +132,22 @@ const GiftBoxScreen = ({ onOpen }: GiftBoxScreenProps) => {
           <AnimatePresence>
             {isOpening && (
               <>
-                {[...Array(12)].map((_, i) => (
+                {[...Array(8)].map((_, i) => (
                   <motion.div
                     key={i}
-                    className="absolute top-1/2 left-1/2 text-xl sm:text-2xl"
-                    initial={{ x: 0, y: 0, opacity: 1, scale: 0 }}
-                    animate={{
-                      x: Math.cos((i / 12) * Math.PI * 2) * (80 + Math.random() * 40),
-                      y: Math.sin((i / 12) * Math.PI * 2) * (80 + Math.random() * 40) - 50,
-                      opacity: [1, 1, 0],
-                      scale: [0, 1.5, 0],
-                      rotate: Math.random() * 360,
+                    className="absolute top-1/2 left-1/2 text-lg sm:text-xl will-change-transform"
+                    style={{
+                      x: Math.cos((i / 8) * Math.PI * 2) * (70 + (i % 2) * 20),
+                      y: Math.sin((i / 8) * Math.PI * 2) * (70 + (i % 2) * 20) - 40,
                     }}
-                    transition={{ duration: 0.8, delay: i * 0.03 }}
+                    initial={{ opacity: 1, scale: 0 }}
+                    animate={{
+                      opacity: 0,
+                      scale: 1.2,
+                    }}
+                    transition={{ duration: 0.6, delay: i * 0.05 }}
                   >
-                    {['✨', '⭐', '🌟', '💫'][i % 4]}
+                    {['✨', '⭐', '🌟'][i % 3]}
                   </motion.div>
                 ))}
               </>
@@ -178,26 +177,26 @@ const GiftBoxScreen = ({ onOpen }: GiftBoxScreenProps) => {
       </AnimatePresence>
 
       {/* Subtle floating particles - neutral, not Valentine themed */}
-      {[...Array(6)].map((_, i) => (
+      {[...Array(4)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute text-lg pointer-events-none"
+          className="absolute text-base pointer-events-none will-change-transform"
           style={{
-            left: `${15 + Math.random() * 70}%`,
-            top: `${20 + Math.random() * 60}%`,
+            left: `${20 + i * 20}%`,
+            top: `${30 + (i % 2) * 40}%`,
           }}
           animate={{
-            y: [-10, 10, -10],
-            opacity: [0.3, 0.6, 0.3],
-            rotate: [0, 360],
+            y: [-8, 8, -8],
+            opacity: [0.2, 0.5, 0.2],
           }}
           transition={{
-            duration: 3 + Math.random() * 2,
+            duration: 4 + i,
             repeat: Infinity,
-            delay: i * 0.5,
+            delay: i * 0.6,
+            ease: "easeInOut"
           }}
         >
-          {['✨', '⭐', '🌟'][i % 3]}
+          {['✨', '⭐'][i % 2]}
         </motion.div>
       ))}
     </motion.div>
