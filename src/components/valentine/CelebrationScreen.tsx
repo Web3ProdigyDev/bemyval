@@ -290,8 +290,17 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                     className="text-primary hover:text-primary/80 text-xs font-bold transition-colors flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-lg hover:bg-primary/20"
                   >
                     <Globe className="w-3 h-3" />
-                    <span>Inspired Devs</span>
+                    <span>Website</span>
                     <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
+                  <a
+                    href={`https://wa.me/${INSPIRED_DEVS_WHATSAPP.replace("+", "")}?text=${encodeURIComponent("Hi Inspired Devs! I love your Valentine's website! 💕")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#25D366] hover:text-[#128C7E] text-xs font-bold transition-colors flex items-center gap-1 bg-[#25D366]/10 px-2 py-1 rounded-lg hover:bg-[#25D366]/20"
+                  >
+                    <MessageCircle className="w-3 h-3" />
+                    <span>Chat</span>
                   </a>
                 </div>
               </motion.div>
