@@ -12,6 +12,9 @@ interface ShareDialogProps {
 // Published URL - use this for share links
 const PUBLISHED_URL = 'https://yoursurprise.lovable.app';
 
+// Inspired Devs contact information
+const INSPIRED_DEVS_WHATSAPP = "+2349019459804";
+
 // Simple encoding for URL params (makes link shorter and less obvious)
 const encodeParam = (str: string): string => {
   return btoa(encodeURIComponent(str)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
@@ -123,7 +126,7 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
     if (!saved) return;
 
     const message = `Hey ${recipientName}! 🎁 Someone has a surprise for you... ${shareLink}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(`https://wa.me/${INSPIRED_DEVS_WHATSAPP.replace("+", "")}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const shareNative = async () => {
