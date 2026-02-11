@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
 import confetti from 'canvas-confetti';
@@ -173,16 +173,16 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
         <motion.div
           initial={{ opacity: 0, y: -30, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, type: "spring" }}
+          transition={{ duration: 0.6, type: "spring" }}
           className="text-center w-full -mt-2"
         >
           <motion.h1
             className="font-romantic text-lg sm:text-xl md:text-2xl lg:text-3xl text-primary mb-0.5 drop-shadow-lg leading-tight"
             animate={{ 
-              scale: [1, 1.02, 1],
+              scale: [1, 1.01, 1],
             }}
             transition={{ 
-              duration: 2, 
+              duration: 2.5, 
               repeat: Infinity,
               ease: "easeInOut"
             }}
@@ -190,13 +190,13 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
             {questionText}
           </motion.h1>
           <motion.div
-            className="text-xl sm:text-2xl"
+            className="text-xl sm:text-2xl will-change-transform"
             animate={{ 
-              scale: [1, 1.2, 1],
-              y: [0, -6, 0],
+              scale: [1, 1.15, 1],
+              y: [0, -5, 0],
             }}
             transition={{ 
-              duration: 1.5, 
+              duration: 1.8, 
               repeat: Infinity,
               ease: "easeInOut"
             }}
@@ -257,7 +257,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               )}
             </>
           ) : (
-            {/* Double Yes Buttons */}
+            /* Double Yes Buttons */
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}

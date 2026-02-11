@@ -47,9 +47,9 @@ const CursorSparkles = () => {
   }, []);
 
   useEffect(() => {
-    // Throttle to avoid too many sparkles
+    // Throttle to avoid too many sparkles - increased throttle for better performance
     let lastTime = 0;
-    const throttleMs = 80;
+    const throttleMs = 120; // Increased from 80ms to 120ms
 
     const handleMove = (e: MouseEvent | TouchEvent) => {
       const now = Date.now();
@@ -59,8 +59,8 @@ const CursorSparkles = () => {
       }
     };
 
-    window.addEventListener('mousemove', handleMove);
-    window.addEventListener('touchmove', handleMove);
+    window.addEventListener('mousemove', handleMove, { passive: true });
+    window.addEventListener('touchmove', handleMove, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMove);
@@ -79,21 +79,20 @@ const CursorSparkles = () => {
         {sparkles.map((sparkle) => (
           <motion.div
             key={sparkle.id}
-            className="absolute"
+            className="absolute will-change-transform"
             style={{
               left: sparkle.x,
               top: sparkle.y,
               fontSize: sparkle.size,
             }}
-            initial={{ opacity: 1, scale: 0, rotate: 0 }}
+            initial={{ opacity: 1, scale: 0 }}
             animate={{ 
               opacity: 0, 
-              scale: 1.5, 
-              rotate: 180,
-              y: -20,
+              scale: 1.3, 
+              y: -15,
             }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
             onAnimationComplete={() => removeSparkle(sparkle.id)}
           >
             {sparkle.emoji}

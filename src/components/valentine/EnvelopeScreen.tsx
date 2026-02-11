@@ -96,9 +96,9 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       >
         {/* Shadow */}
         <motion.div
-          className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-48 h-8 bg-black/15 rounded-full blur-xl"
-          animate={isOpening ? { opacity: 0, scale: 1.5 } : { scale: [1, 1.1, 1] }}
-          transition={{ duration: 2, repeat: isOpening ? 0 : Infinity }}
+          className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-48 h-8 bg-black/15 rounded-full blur-xl will-change-transform"
+          animate={isOpening ? { opacity: 0, scale: 1.5 } : { scale: [1, 1.05, 1] }}
+          transition={{ duration: 2.5, repeat: isOpening ? 0 : Infinity }}
         />
 
         {/* Envelope */}
@@ -113,15 +113,14 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
             
             {/* Heart seal */}
             <motion.div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-4xl sm:text-5xl"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-4xl sm:text-5xl will-change-transform"
               animate={isOpening ? { 
-                scale: [1, 1.5, 0],
-                rotate: 360,
+                scale: [1, 1.3, 0],
                 opacity: 0 
               } : { 
-                scale: [1, 1.15, 1]
+                scale: [1, 1.1, 1]
               }}
-              transition={isOpening ? { duration: 0.5 } : { duration: 1.5, repeat: Infinity }}
+              transition={isOpening ? { duration: 0.5 } : { duration: 2, repeat: Infinity }}
             >
               💌
             </motion.div>
@@ -171,12 +170,12 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
                     className="text-primary font-romantic text-xl sm:text-2xl md:text-3xl"
                     animate={{
                       textShadow: [
-                        "0 0 10px rgba(255,107,138,0.3)",
-                        "0 0 20px rgba(255,107,138,0.6)",
-                        "0 0 10px rgba(255,107,138,0.3)",
+                        "0 0 8px rgba(255,107,138,0.2)",
+                        "0 0 15px rgba(255,107,138,0.4)",
+                        "0 0 8px rgba(255,107,138,0.2)",
                       ],
                     }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
+                    transition={{ duration: 2, repeat: Infinity }}
                   >
                     {content.letterPreview}
                   </motion.p>
@@ -187,18 +186,18 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.5, type: "spring" }}
                   >
-                    {['💕', '💖', '💕'].map((heart, i) => (
+                    {['💕', '💖'].map((heart, i) => (
                       <motion.span
                         key={i}
-                        className="text-2xl"
+                        className="text-2xl will-change-transform"
                         animate={{ 
-                          y: [0, -5, 0],
-                          scale: [1, 1.2, 1],
+                          y: [0, -4, 0],
+                          scale: [1, 1.1, 1],
                         }}
                         transition={{ 
-                          duration: 0.8, 
+                          duration: 1, 
                           repeat: Infinity, 
-                          delay: i * 0.15 
+                          delay: i * 0.2 
                         }}
                       >
                         {heart}
@@ -259,29 +258,28 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       <AnimatePresence>
         {isOpening && (
           <>
-            {[...Array(20)].map((_, i) => (
+            {[...Array(12)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute text-xl sm:text-2xl pointer-events-none"
+                className="absolute text-lg sm:text-xl pointer-events-none will-change-transform"
                 style={{
                   left: '50%',
                   top: '50%',
                 }}
                 initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
                 animate={{
-                  x: (Math.random() - 0.5) * 300,
-                  y: (Math.random() - 0.5) * 300 - 100,
-                  opacity: [0, 1, 0],
-                  scale: [0, 1, 0.5],
-                  rotate: Math.random() * 360,
+                  x: (Math.random() - 0.5) * 250,
+                  y: (Math.random() - 0.5) * 250 - 80,
+                  opacity: [0, 0.8, 0],
+                  scale: [0, 1, 0.3],
                 }}
                 transition={{ 
-                  duration: 1.5, 
-                  delay: 0.5 + i * 0.05,
+                  duration: 1.2, 
+                  delay: 0.5 + i * 0.06,
                   ease: "easeOut"
                 }}
               >
-                {['💕', '💖', '💗', '❤️', '💘', '✨'][i % 6]}
+                {['💕', '💖', '💗', '❤️'][i % 4]}
               </motion.div>
             ))}
           </>

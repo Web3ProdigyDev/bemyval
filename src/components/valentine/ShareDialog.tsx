@@ -212,9 +212,9 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
           </button>
 
           <motion.div
-            className="text-4xl text-center mb-3"
-            animate={{ scale: [1, 1.15, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            className="text-4xl text-center mb-3 will-change-transform"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2.5, repeat: Infinity }}
           >
             🎁
           </motion.div>

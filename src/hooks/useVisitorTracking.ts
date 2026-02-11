@@ -43,51 +43,56 @@ export const useVisitorTracking = () => {
     }
   };
 
-  const trackEvent = async (data: VisitorData) => {
+  const trackEvent = (data: VisitorData) => {
     // Don't track duplicate page views in same session
     if (data.action === 'page_view' && hasTrackedVisit.current) return;
     
-    try {
-      // Track screen
-      if (data.screen && !screenHistory.current.includes(data.screen)) {
-        screenHistory.current.push(data.screen);
-      }
+    // Track screen
+    if (data.screen && !screenHistory.current.includes(data.screen)) {
+      screenHistory.current.push(data.screen);
+    }
 
-      // Try to save to database (non-blocking)
-      const updateData: any = {
-        last_interaction: new Date().toISOString(),
-        screen_changes: screenHistory.current,
-      };
+    // Track locally first - always succeeds
+    storeLocalAnalytics(data.action);
+    
+    if (data.action === 'page_view') {
+      hasTrackedVisit.current = true;
+    }
 
-      if (data.action === 'page_view') {
-        updateData.page_view = true;
-        hasTrackedVisit.current = true;
-      } else if (data.action === 'said_yes') {
-        updateData.said_yes = true;
-      } else if (data.action === 'shared') {
-        updateData.shared = true;
-      } else if (data.action === 'screen_view') {
-        // Just tracking screen changes
-      }
+    // Defer database work - fire and forget with setTimeout to avoid blocking
+    // This ensures the main interaction completes before any DB call
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        try {
+          const updateData: any = {
+            last_interaction: new Date().toISOString(),
+            screen_changes: screenHistory.current.slice(-10), // Keep only last 10 screens to save space
+          };
 
-      if (data.recipientName) updateData.recipient_name = data.recipientName;
-      if (data.senderName) updateData.sender_name = data.senderName;
-      if (data.noCount !== undefined) updateData.said_no_count = data.noCount;
+          if (data.action === 'page_view') {
+            updateData.page_view = true;
+          } else if (data.action === 'said_yes') {
+            updateData.said_yes = true;
+          } else if (data.action === 'shared') {
+            updateData.shared = true;
+          }
 
-      // Fire and forget - don't wait for response
-      supabase
-        .from('valentine_analytics')
-        .update(updateData)
-        .eq('session_id', sessionId.current)
-        .then()
-        .catch(() => {
-          // Database unavailable - that's fine, site continues to work
-        });
+          if (data.recipientName) updateData.recipient_name = data.recipientName;
+          if (data.senderName) updateData.sender_name = data.senderName;
+          if (data.noCount !== undefined) updateData.said_no_count = data.noCount;
 
-      // Also store in localStorage as fallback
-      storeLocalAnalytics(data.action);
-    } catch (e) {
-      // Silently fail - analytics shouldn't break the experience
+          // Non-blocking database update
+          supabase
+            .from('valentine_analytics')
+            .update(updateData)
+            .eq('session_id', sessionId.current)
+            .catch(() => {
+              // Database unavailable - local storage already has the data
+            });
+        } catch (e) {
+          // Silently fail - analytics shouldn't affect the experience
+        }
+      }, 0);
     }
   };
 

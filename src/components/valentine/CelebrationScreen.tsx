@@ -104,16 +104,16 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
               className="flex flex-col items-center text-center w-full max-w-xl"
             >
               <motion.div
-                className="text-4xl sm:text-5xl md:text-6xl mb-2"
-                animate={{ scale: [1, 1.3, 1] }}
-                transition={{ duration: 0.5, repeat: Infinity }}
+                className="text-4xl sm:text-5xl md:text-6xl mb-2 will-change-transform"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.7, repeat: Infinity }}
               >
                 🎉💕🎉
               </motion.div>
               <motion.h1
                 className="font-romantic text-xl sm:text-2xl md:text-3xl lg:text-4xl text-primary mb-1 drop-shadow-lg"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 0.6, repeat: Infinity }}
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
               >
                 {content.celebrationTitle}
               </motion.h1>
@@ -138,9 +138,9 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
             >
               {/* Emoji Header */}
               <motion.div
-                className="text-2xl sm:text-3xl mb-1"
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
+                className="text-2xl sm:text-3xl mb-1 will-change-transform"
+                animate={{ scale: [1, 1.15, 1] }}
+                transition={{ duration: 2.2, repeat: Infinity }}
               >
                 💕
               </motion.div>
@@ -261,21 +261,14 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
 
               {/* Contact Card */}
               <motion.div
-                className="flex flex-col items-center justify-center gap-2 bg-card/80 backdrop-blur-md border border-primary/30 rounded-xl px-3 py-2 shadow-valentine w-full max-w-sm"
+                className="flex flex-col items-center justify-center gap-2 bg-card/80 backdrop-blur-md border border-primary/30 rounded-xl px-3 py-2 shadow-valentine w-full max-w-sm will-change-transform"
                 animate={{
-                  x: [0, -3, 3, -2, 2, 0],
-                  rotate: [0, -1.5, 1.5, -1, 1, 0],
-                  boxShadow: [
-                    "0 4px 20px rgba(255, 107, 138, 0.2)",
-                    "0 4px 35px rgba(255, 107, 138, 0.5)",
-                    "0 4px 20px rgba(255, 107, 138, 0.2)",
-                  ],
-                  scale: [1, 1.02, 1, 1.01, 1],
+                  scale: [1, 1.01, 1],
                 }}
                 transition={{
-                  duration: 1.8,
+                  duration: 2.5,
                   repeat: Infinity,
-                  repeatDelay: 0.5,
+                  repeatDelay: 1,
                   ease: "easeInOut",
                 }}
               >
