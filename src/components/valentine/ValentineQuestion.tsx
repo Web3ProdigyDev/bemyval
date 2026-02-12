@@ -8,7 +8,6 @@ import {
   noButtonMessages, 
   mainQuestionTexts,
   yesButtonTexts,
-  doubleYesTexts,
   hintAfterEscapeTexts,
   noEscapePhrases 
 } from '@/lib/randomContent';
@@ -45,7 +44,6 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
   const content = useMemo(() => ({
     mainQuestion: getRandomItem(mainQuestionTexts),
     yesButton: getRandomItem(yesButtonTexts),
-    doubleYes: getRandomItem(doubleYesTexts),
     hintText: getRandomItem(hintAfterEscapeTexts),
     noEscape: getRandomItem(noEscapePhrases),
   }), []);
