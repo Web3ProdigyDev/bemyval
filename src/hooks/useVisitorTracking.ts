@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 interface VisitorData {
   screen: string;
@@ -20,25 +19,7 @@ export const useVisitorTracking = () => {
     // Generate unique session ID
     sessionId.current = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
-    // Initialize database record if possible
-    initializeSession();
   }, []);
-
-  const initializeSession = async () => {
-    try {
-      await supabase
-        .from('analytics')
-        .insert({
-          session_id: sessionId.current,
-          event_type: 'visit',
-        })
-        .catch(() => {
-          // Silently fail - site should work without analytics
-        });
-    } catch (e) {
-      // Silently fail - site should work without analytics
-    }
-  };
 
   const trackEvent = (data: VisitorData) => {
     // Don't track duplicate page views in same session
@@ -56,31 +37,7 @@ export const useVisitorTracking = () => {
       hasTrackedVisit.current = true;
     }
 
-    // Defer database work - fire and forget to avoid blocking
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        try {
-          let eventType = 'interaction';
-          if (data.action === 'page_view') eventType = 'visit';
-          else if (data.action === 'said_yes') eventType = 'yes_click';
-          else if (data.action === 'shared') eventType = 'share';
-          else if (data.action === 'no_click') eventType = 'no_click';
 
-          // Insert lightweight event record
-          supabase
-            .from('analytics')
-            .insert({
-              session_id: sessionId.current,
-              event_type: eventType,
-            })
-            .catch(() => {
-              // Database unavailable - local storage already has the data
-            });
-        } catch (e) {
-          // Silently fail - analytics shouldn't affect the experience
-        }
-      }, 0);
-    }
   };
 
   const storeLocalAnalytics = (action: string) => {

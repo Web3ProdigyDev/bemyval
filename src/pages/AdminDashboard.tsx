@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trash2, Edit3, Plus, Save, X } from 'lucide-react';
+import { Trash2, Edit3, Plus, Save, X, BarChart3 } from 'lucide-react';
 
 interface CustomWish {
   id: string;
@@ -38,11 +38,32 @@ function saveWishes(wishes: CustomWish[]) {
   localStorage.setItem('custom_wishes', JSON.stringify(wishes));
 }
 
+interface ShareRecord {
+  id: string;
+  timestamp: string;
+  recipientName: string;
+  customMessage: string;
+  senderName: string;
+  senderPhone: string;
+  isAnonymous: boolean;
+  shareLink: string;
+}
+
+interface AnalyticsData {
+  visits: number;
+  yeses: number;
+  shares: number;
+  sessions: { sessionId: string; timestamp: string; action: string }[];
+}
+
 export default function AdminDashboard() {
   const [wishes, setWishes] = useState<CustomWish[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState<Omit<CustomWish, 'id'>>(DEFAULT_WISH);
+  const [activeTab, setActiveTab] = useState<'wishes' | 'analytics'>('wishes');
+  const [shareRecords, setShareRecords] = useState<ShareRecord[]>([]);
+  const [analytics, setAnalytics] = useState<AnalyticsData>({ visits: 0, yeses: 0, shares: 0, sessions: [] });
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
@@ -51,7 +72,19 @@ export default function AdminDashboard() {
       return;
     }
     setWishes(loadWishes());
+    loadAnalytics();
   }, []);
+
+  const loadAnalytics = () => {
+    try {
+      const raw = localStorage.getItem('valentine_analytics');
+      if (raw) setAnalytics(JSON.parse(raw));
+    } catch { /* empty */ }
+    try {
+      const raw = localStorage.getItem('valentine_shares');
+      if (raw) setShareRecords(JSON.parse(raw));
+    } catch { /* empty */ }
+  };
 
   const handleCreate = () => {
     const newWish: CustomWish = {
@@ -145,6 +178,92 @@ export default function AdminDashboard() {
           </motion.button>
         </motion.div>
 
+        {/* Tab Navigation */}
+        <div className="flex gap-3 mb-6">
+          <motion.button
+            onClick={() => setActiveTab('wishes')}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition ${
+              activeTab === 'wishes'
+                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md'
+                : 'bg-white text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            Custom Wishes
+          </motion.button>
+          <motion.button
+            onClick={() => { setActiveTab('analytics'); loadAnalytics(); }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition flex items-center gap-2 ${
+              activeTab === 'analytics'
+                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md'
+                : 'bg-white text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <BarChart3 className="w-4 h-4" />
+            Shares & Analytics
+          </motion.button>
+        </div>
+
+        {/* === ANALYTICS TAB === */}
+        {activeTab === 'analytics' && (
+          <div className="space-y-6">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-xl shadow-lg p-5 text-center">
+                <p className="text-3xl font-bold text-pink-600">{analytics.visits}</p>
+                <p className="text-sm text-gray-500 mt-1">Total Visits</p>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-white rounded-xl shadow-lg p-5 text-center">
+                <p className="text-3xl font-bold text-purple-600">{analytics.yeses}</p>
+                <p className="text-sm text-gray-500 mt-1">Said Yes</p>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-xl shadow-lg p-5 text-center">
+                <p className="text-3xl font-bold text-rose-600">{shareRecords.length}</p>
+                <p className="text-sm text-gray-500 mt-1">Links Shared</p>
+              </motion.div>
+            </div>
+
+            {/* Share Records */}
+            <div>
+              <h2 className="text-xl font-bold text-gray-800 mb-3">Share History</h2>
+              {shareRecords.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+                  <p className="text-4xl mb-2">📭</p>
+                  <p className="text-gray-500">No shares yet. When someone uses "Share the Love", their info will appear here.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {shareRecords.slice().reverse().map((rec) => (
+                    <motion.div key={rec.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-xl shadow-lg p-4 border border-gray-100">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="font-semibold text-gray-800">
+                            To: <span className="text-pink-600">{rec.recipientName || '(no name)'}</span>
+                          </p>
+                          {rec.customMessage && (
+                            <p className="text-sm text-gray-500 italic mt-0.5">"{rec.customMessage}"</p>
+                          )}
+                          <p className="text-xs text-gray-400 mt-1">
+                            From: {rec.isAnonymous ? 'Anonymous' : `${rec.senderName}${rec.senderPhone ? ` (${rec.senderPhone})` : ''}`}
+                          </p>
+                        </div>
+                        <p className="text-xs text-gray-400 shrink-0">
+                          {new Date(rec.timestamp).toLocaleString()}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* === WISHES TAB === */}
+        {activeTab === 'wishes' && (<>
         {/* Info Card */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -283,7 +402,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Wishes List */}
-        <div className="space-y-4">
+        <div className="space-y-4" style={{ marginBottom: '2rem' }}>
           {wishes.length === 0 && !isFormOpen && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -349,6 +468,7 @@ export default function AdminDashboard() {
             </motion.div>
           ))}
         </div>
+        </>)}
       </div>
     </div>
   );
