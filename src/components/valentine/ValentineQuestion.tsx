@@ -52,8 +52,8 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
   }), []);
 
   const yesScale = Math.min(1 + escapeCount * 0.2, 2.2);
-  // Remove fading - keep opacity high
-  const noScale = escapeCount >= 3 ? 0 : 1;
+  // Hide No button after 3 escapes
+  const showNoButton = escapeCount < 3;
 
   const displayName = recipientName || "You";
 
@@ -77,17 +77,18 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
 
     const currentCount = escapeCount + 1;
     
-    // On 3rd or 4th escape, move button to overlap with Yes button
-    if (currentCount >= 3) {
+    // On 3rd escape, position button on top of Yes button, then hide it
+    if (currentCount === 3) {
       setNoPosition({ x: 0, y: 0 });
+      // Will be hidden by showNoButton condition
     } else {
-      // Keep button in safe visible zones
+      // Keep button in safe visible zones - tighter constraints
       const rect = container.getBoundingClientRect();
-      const padding = isMobile ? 30 : 50;
+      const padding = isMobile ? 40 : 60;
       
-      // Generate position in a safe area (avoid going off-screen)
-      const maxX = Math.min(rect.width / 3 - padding, 120);
-      const maxY = Math.min(rect.height / 3 - padding, 80);
+      // Constrain to visible safe area in center of screen
+      const maxX = Math.min(rect.width / 4, 80);
+      const maxY = Math.min(rect.height / 4, 60);
       
       const newX = (Math.random() * 2 - 1) * maxX;
       const newY = (Math.random() * 2 - 1) * maxY;
@@ -112,7 +113,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
     });
     
     setTimeout(() => setShowMessage(false), 1000);
-  }, [escapeCount]);
+  }, [escapeCount, isMobile]);
 
   useEffect(() => {
     if (escapeCount >= 3) {
@@ -237,13 +238,13 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
         </AnimatePresence>
 
         {/* Buttons Container - Flexbox with gap - responsive sizing */}
-        <div className="flex flex-row gap-1 sm:gap-2 items-center justify-center w-full mt-0 flex-wrap">
+        <div className="flex flex-row gap-2 sm:gap-3 items-center justify-center w-full mt-0">
           {!showDoubleYes ? (
             <>
               {/* Yes Button */}
               <motion.button
                 onClick={handleYesClick}
-                className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-3 sm:py-2.5 sm:px-7 rounded-full shadow-valentine relative overflow-hidden text-xs sm:text-base"
+                className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-4 sm:py-2.5 sm:px-7 rounded-full shadow-valentine relative overflow-hidden text-xs sm:text-base whitespace-nowrap"
                 style={{ transform: `scale(${yesScale})` }}
                 whileHover={{ scale: yesScale * 1.08 }}
                 whileTap={{ scale: yesScale * 0.95 }}
@@ -252,13 +253,12 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               </motion.button>
 
               {/* No Button - Disappears on 3rd escape */}
-              {noScale > 0 && (
+              {showNoButton && (
                 <motion.button
                   type="button"
-                  className="bg-muted text-muted-foreground font-bold py-1.5 px-4 sm:py-2 sm:px-5 rounded-full transition-all text-xs sm:text-sm"
+                  className="bg-muted text-muted-foreground font-bold py-1.5 px-4 sm:py-2 sm:px-5 rounded-full transition-all text-xs sm:text-sm whitespace-nowrap"
                   style={{
-                    transform: `translate(${noPosition.x}px, ${noPosition.y}px) scale(${noScale})`,
-                    opacity: 1,
+                    transform: `translate(${noPosition.x}px, ${noPosition.y}px)`,
                   }}
                   onMouseEnter={!isMobile ? moveNoButton : undefined}
                   onTouchStart={isMobile ? moveNoButton : undefined}
@@ -274,11 +274,11 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 200 }}
-              className="flex flex-row gap-1 sm:gap-2 w-full justify-center items-center flex-wrap"
+              className="flex flex-row gap-2 sm:gap-3 justify-center items-center"
             >
               <motion.button
                 onClick={handleYesClick}
-                className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-3 sm:py-2.5 sm:px-7 rounded-full shadow-valentine text-xs sm:text-base"
+                className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-4 sm:py-2.5 sm:px-7 rounded-full shadow-valentine text-xs sm:text-base whitespace-nowrap"
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -287,7 +287,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               
               <motion.button
                 onClick={handleYesClick}
-                className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-3 sm:py-2.5 sm:px-7 rounded-full shadow-valentine text-xs sm:text-base"
+                className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-4 sm:py-2.5 sm:px-7 rounded-full shadow-valentine text-xs sm:text-base whitespace-nowrap"
                 animate={{ y: [0, -4, 0] }}
                 transition={{ duration: 1, repeat: Infinity }}
                 whileHover={{ scale: 1.08 }}

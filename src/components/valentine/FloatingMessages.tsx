@@ -22,22 +22,22 @@ interface SafePosition {
   repeatDelay: number;
 }
 
-// Memoized single floating message
+// Memoized single floating message with staggered appearance
 const FloatingMessage = memo(({ msg }: { msg: SafePosition }) => {
   return (
     <motion.div
       key={msg.id}
-      className="absolute text-primary/70 font-bold text-sm sm:text-base md:text-lg whitespace-nowrap will-change-transform"
+      className="absolute text-primary/60 font-semibold text-xs sm:text-sm md:text-base whitespace-nowrap will-change-transform"
       style={{
         left: `${msg.x}%`,
         top: `${msg.y}%`,
         pointerEvents: 'none',
       }}
-      initial={{ opacity: 0, scale: 0 }}
+      initial={{ opacity: 0, scale: 0, y: 0 }}
       animate={{ 
-        opacity: [0, 0.7, 0.5, 0],
-        scale: [0.8, 1.1, 1, 0.8],
-        y: [0, -15, -28],
+        opacity: [0, 0.5, 0.4, 0],
+        scale: [0.7, 1, 0.9, 0.7],
+        y: [0, -12, -20, -25],
       }}
       transition={{
         delay: msg.delay,
@@ -45,7 +45,7 @@ const FloatingMessage = memo(({ msg }: { msg: SafePosition }) => {
         repeat: Infinity,
         repeatType: "loop",
         repeatDelay: msg.repeatDelay,
-        ease: "easeOut",
+        ease: "easeInOut",
       }}
     >
       {msg.text}
@@ -56,50 +56,50 @@ const FloatingMessage = memo(({ msg }: { msg: SafePosition }) => {
 FloatingMessage.displayName = 'FloatingMessage';
 
 const FloatingMessages = () => {
-  // Pre-generate all data with stable memoization
+  // Pre-generate all data with stable memoization and randomized intervals
   const messages = useMemo(() => {
     const positions: SafePosition[] = [];
     const zones: SafePosition['zone'][] = ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'left', 'right'];
     
-    // Reduce message count for better performance (from 24 to 16)
-    const messageCount = 16;
+    // Optimized message count for performance
+    const messageCount = 14;
     
     for (let i = 0; i < messageCount; i++) {
       const zone = zones[i % zones.length];
       let x: number, y: number;
       
-      // Position based on zone - keeping away from center content
+      // Position across entire screen including center (behind video)
       switch (zone) {
         case 'top-left':
-          x = -5 + (Math.random() * 25);
-          y = -8 + (Math.random() * 20);
+          x = -5 + (Math.random() * 35);
+          y = -8 + (Math.random() * 25);
           break;
         case 'top-right':
-          x = 75 + (Math.random() * 25);
-          y = -8 + (Math.random() * 20);
+          x = 70 + (Math.random() * 30);
+          y = -8 + (Math.random() * 25);
           break;
         case 'bottom-left':
-          x = -5 + (Math.random() * 25);
+          x = -5 + (Math.random() * 35);
           y = 75 + (Math.random() * 25);
           break;
         case 'bottom-right':
-          x = 75 + (Math.random() * 25);
+          x = 70 + (Math.random() * 30);
           y = 75 + (Math.random() * 25);
           break;
         case 'left':
-          x = -8 + (Math.random() * 18);
-          y = 25 + (Math.random() * 50);
+          x = -8 + (Math.random() * 25);
+          y = 20 + (Math.random() * 60);
           break;
         case 'right':
-          x = 82 + (Math.random() * 18);
-          y = 25 + (Math.random() * 50);
+          x = 80 + (Math.random() * 20);
+          y = 20 + (Math.random() * 60);
           break;
       }
       
-      // Use consistent seed-based delay for better performance
-      const delay = (i * 0.5) % 10;
-      const duration = 6 + (i % 3);
-      const repeatDelay = 2 + (i % 3);
+      // Randomized delays and durations for staggered appearance
+      const delay = Math.random() * 8; // Random start time 0-8s
+      const duration = 5 + Math.random() * 3; // Duration 5-8s
+      const repeatDelay = 1 + Math.random() * 4; // Pause 1-5s between repeats
       
       const text = celebrationMessages[i % celebrationMessages.length];
       

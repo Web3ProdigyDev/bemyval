@@ -17,11 +17,25 @@ interface CustomWish {
   is_default: boolean;
 }
 
+interface AnalyticsData {
+  totalVisits: number;
+  totalYesClicks: number;
+  totalShares: number;
+  totalInteractions: number;
+}
+
 export default function AdminDashboard() {
   const [wishes, setWishes] = useState<CustomWish[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [analytics, setAnalytics] = useState<AnalyticsData>({
+    totalVisits: 0,
+    totalYesClicks: 0,
+    totalShares: 0,
+    totalInteractions: 0,
+  });
+  const [activeTab, setActiveTab] = useState<'wishes' | 'analytics'>('wishes');
   const [formData, setFormData] = useState<Partial<CustomWish>>({
     title: '',
     subtitle: '',
@@ -39,8 +53,33 @@ export default function AdminDashboard() {
       router.push('/supersecretadminloginplace');
     } else {
       loadWishes();
+      loadAnalytics();
     }
   }, [router]);
+
+  const loadAnalytics = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('analytics')
+        .select('event_type');
+
+      if (error) throw error;
+
+      const visits = data?.filter(d => d.event_type === 'visit').length || 0;
+      const yesClicks = data?.filter(d => d.event_type === 'yes_click').length || 0;
+      const shares = data?.filter(d => d.event_type === 'share').length || 0;
+      const interactions = data?.filter(d => d.event_type === 'interaction').length || 0;
+
+      setAnalytics({
+        totalVisits: visits,
+        totalYesClicks: yesClicks,
+        totalShares: shares,
+        totalInteractions: interactions,
+      });
+    } catch (error) {
+      console.error('[v0] Error loading analytics:', error);
+    }
+  };
 
   const loadWishes = async () => {
     try {
@@ -138,7 +177,7 @@ export default function AdminDashboard() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex justify-between items-center mb-8"
+          className="flex justify-between items-center mb-6"
         >
           <h1 className="text-4xl font-bold text-gray-800">Admin Dashboard</h1>
           <motion.button
@@ -151,7 +190,126 @@ export default function AdminDashboard() {
           </motion.button>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Tab Navigation */}
+        <div className="flex gap-4 mb-8">
+          <motion.button
+            onClick={() => setActiveTab('wishes')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`px-6 py-3 rounded-lg font-semibold transition ${
+              activeTab === 'wishes'
+                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            Custom Wishes
+          </motion.button>
+          <motion.button
+            onClick={() => setActiveTab('analytics')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`px-6 py-3 rounded-lg font-semibold transition ${
+              activeTab === 'analytics'
+                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            Analytics
+          </motion.button>
+        </div>
+
+        {activeTab === 'analytics' && (
+          <div className="grid gap-6">
+            {/* Analytics Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white rounded-2xl shadow-xl p-6"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-medium text-gray-600">Total Visits</h3>
+                  <span className="text-3xl">👀</span>
+                </div>
+                <p className="text-3xl font-bold text-gray-800">{analytics.totalVisits}</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+                className="bg-white rounded-2xl shadow-xl p-6"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-medium text-gray-600">Yes Clicks</h3>
+                  <span className="text-3xl">💕</span>
+                </div>
+                <p className="text-3xl font-bold text-gray-800">{analytics.totalYesClicks}</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+                className="bg-white rounded-2xl shadow-xl p-6"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-medium text-gray-600">Shares</h3>
+                  <span className="text-3xl">🔗</span>
+                </div>
+                <p className="text-3xl font-bold text-gray-800">{analytics.totalShares}</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+                className="bg-white rounded-2xl shadow-xl p-6"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-medium text-gray-600">Interactions</h3>
+                  <span className="text-3xl">✨</span>
+                </div>
+                <p className="text-3xl font-bold text-gray-800">{analytics.totalInteractions}</p>
+              </motion.div>
+            </div>
+
+            {/* Analytics Info */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white rounded-2xl shadow-xl p-8"
+            >
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Engagement Overview</h2>
+              <p className="text-gray-600 mb-4">
+                Track visitor engagement and interactions with your valentine site. All data is stored
+                efficiently and the site gracefully handles storage limits.
+              </p>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="p-4 bg-pink-50 rounded-lg">
+                  <p className="font-semibold text-gray-700">Conversion Rate</p>
+                  <p className="text-2xl font-bold text-pink-600">
+                    {analytics.totalVisits > 0
+                      ? Math.round((analytics.totalYesClicks / analytics.totalVisits) * 100)
+                      : 0}%
+                  </p>
+                </div>
+                <div className="p-4 bg-purple-50 rounded-lg">
+                  <p className="font-semibold text-gray-700">Share Rate</p>
+                  <p className="text-2xl font-bold text-purple-600">
+                    {analytics.totalYesClicks > 0
+                      ? Math.round((analytics.totalShares / analytics.totalYesClicks) * 100)
+                      : 0}%
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {activeTab === 'wishes' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -309,6 +467,7 @@ export default function AdminDashboard() {
             </div>
           </motion.div>
         </div>
+        )}
       </div>
     </div>
   );
