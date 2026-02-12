@@ -15,16 +15,28 @@ import { playConfettiSound } from '@/lib/romanticSounds';
 import FloatingMessages from './FloatingMessages';
 import CelebrationVideoPlayer from './CelebrationVideoPlayer';
 
+interface CustomWish {
+  id: string;
+  title: string;
+  subtitle: string;
+  main_message: string;
+  heart_message: string;
+  love_message: string;
+  footer_message: string;
+  website_name: string;
+}
+
 interface CelebrationScreenProps {
   recipientName?: string;
   customMessage?: string;
   senderName?: string;
+  customWish?: CustomWish | null;
 }
 
 // Inspired Devs contact information
 const INSPIRED_DEVS_WHATSAPP = "+2349019459804";
 
-const CelebrationScreen = ({ recipientName, customMessage, senderName }: CelebrationScreenProps) => {
+const CelebrationScreen = ({ recipientName, customMessage, senderName, customWish }: CelebrationScreenProps) => {
   const [showMessage, setShowMessage] = useState(false);
   const [showContact, setShowContact] = useState(false);
 
@@ -200,7 +212,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                   transition={{ delay: 0.4 }}
                   className="text-xs sm:text-sm text-foreground/80 font-medium"
                 >
-                  With all my love! 🌹
+                  {customWish?.heart_message || "With all my love! 🌹"}
                 </motion.p>
 
                 {/* Sender reveal */}
@@ -273,7 +285,7 @@ const CelebrationScreen = ({ recipientName, customMessage, senderName }: Celebra
                 }}
               >
                 <span className="text-primary/70 text-xs font-medium">
-                  Made with 💕 by Inspired Devs
+                  {customWish?.love_message || "Made with 💕 by Inspired Devs"}
                 </span>
                 <div className="flex items-center gap-1.5 flex-wrap justify-center">
                   <a

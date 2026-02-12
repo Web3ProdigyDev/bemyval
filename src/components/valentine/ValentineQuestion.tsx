@@ -14,14 +14,26 @@ import {
 } from '@/lib/randomContent';
 import VideoPlayer from './VideoPlayer';
 
+interface CustomWish {
+  id: string;
+  title: string;
+  subtitle: string;
+  main_message: string;
+  heart_message: string;
+  love_message: string;
+  footer_message: string;
+  website_name: string;
+}
+
 interface ValentineQuestionProps {
   onYesClick: () => void;
   recipientName?: string;
   customMessage?: string;
   senderName?: string;
+  customWish?: CustomWish | null;
 }
 
-const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderName }: ValentineQuestionProps) => {
+const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderName, customWish }: ValentineQuestionProps) => {
   const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
   const [noPosition, setNoPosition] = useState({ x: 0, y: 0 });
