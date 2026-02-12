@@ -243,9 +243,10 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               className="bg-muted text-muted-foreground font-bold py-1.5 px-4 sm:py-2 sm:px-5 rounded-full transition-all text-xs sm:text-sm whitespace-nowrap"
               style={{
                 transform: `translate(${noPosition.x}px, ${noPosition.y}px)`,
+                cursor: escapeCount >= 3 ? 'pointer' : 'auto',
               }}
-              onMouseEnter={escapeCount < 3 && !isMobile ? moveNoButton : undefined}
-              onTouchStart={escapeCount < 3 && isMobile ? moveNoButton : undefined}
+              onMouseEnter={escapeCount < 3 && !isMobile ? moveNoButton : (e) => e.preventDefault()}
+              onTouchStart={escapeCount < 3 && isMobile ? moveNoButton : (e) => e.preventDefault()}
               onClick={moveNoButton}
             >
               <span>No 😢</span>
