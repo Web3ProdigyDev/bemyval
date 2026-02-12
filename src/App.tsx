@@ -160,8 +160,8 @@ export default function App() {
       {/* Action Buttons - Fixed at bottom */}
       <ActionButtons 
         ref={actionButtonsRef}
-        onShare={() => setShowShareDialog(true)}
-        currentScreen={currentScreen}
+        onShareClick={() => setShowShareDialog(true)}
+        showShareButton={currentScreen === 'celebration'}
       />
 
       {/* Share Dialog */}
