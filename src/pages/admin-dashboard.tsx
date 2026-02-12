@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -29,17 +29,17 @@ export default function AdminDashboard() {
     footer_message: '',
     website_name: '',
   });
-  const router = useRouter();
+  const navigate = useNavigate();
 
   // Check authentication
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
     if (!token) {
-      router.push('/supersecretadminloginplace');
+      navigate('/supersecretadminloginplace');
     } else {
       loadWishes();
     }
-  }, [router]);
+  }, [navigate]);
 
   const loadWishes = async () => {
     try {
