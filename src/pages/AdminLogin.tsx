@@ -12,14 +12,11 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const correctPassword = 'iamgodwinhaha';
-      
-      if (password !== correctPassword) {
+      if (password !== 'iamgodwinhaha') {
         throw new Error('Invalid password');
       }
 
-      const token = btoa(`admin-${Date.now()}`);
-      localStorage.setItem('admin_token', token);
+      localStorage.setItem('admin_token', btoa(`admin-${Date.now()}`));
       window.location.href = '/admin-dashboard';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');

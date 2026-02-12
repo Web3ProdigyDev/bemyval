@@ -51,9 +51,9 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
     noEscape: getRandomItem(noEscapePhrases),
   }), []);
 
-  const yesScale = Math.min(1 + escapeCount * 0.2, 2.2);
-  // Hide No button after 3 escapes
-  const showNoButton = escapeCount < 3;
+  const yesScale = Math.min(1 + escapeCount * 0.15, 2.0);
+  // Hide No button after 4 escapes - it lands on top of Yes on the 4th
+  const showNoButton = escapeCount < 4;
 
   const displayName = recipientName || "You";
 
@@ -77,8 +77,8 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
 
     const currentCount = escapeCount + 1;
     
-    // On 3rd escape, position button on top of Yes button, then hide it
-    if (currentCount === 3) {
+    // On 4th escape, position button on top of Yes button, then hide it
+    if (currentCount === 4) {
       setNoPosition({ x: 0, y: 0 });
       // Will be hidden by showNoButton condition
     } else {
@@ -116,7 +116,7 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
   }, [escapeCount, isMobile]);
 
   useEffect(() => {
-    if (escapeCount >= 3) {
+    if (escapeCount >= 4) {
       setShowDoubleYes(true);
       playSuccessSound();
       confetti({

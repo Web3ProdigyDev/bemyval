@@ -15,8 +15,8 @@ export default function Router() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Route matching
-  if (currentPath === '/supersecretadminloginplace') {
+  // Route matching - admin routes
+  if (currentPath === '/admin') {
     return <AdminLogin />;
   }
 
