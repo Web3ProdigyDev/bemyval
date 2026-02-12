@@ -1,6 +1,5 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { supabase } from '@/integrations/supabase/client';
 import FloatingHearts from '@/components/valentine/FloatingHearts';
 import GiftBoxScreen from '@/components/valentine/GiftBoxScreen';
 import EnvelopeScreen from '@/components/valentine/EnvelopeScreen';
@@ -54,36 +53,21 @@ export default function App() {
   // Preload all media assets on mount
   useMediaPreloader();
 
-  // Fetch custom wishes on mount
+  // Load custom wishes from localStorage on mount
   useEffect(() => {
-    const fetchCustomWish = async () => {
-      try {
-        // Try to get the default wish or first wish
-        const { data } = await supabase
-          .from('custom_wishes')
-          .select('*')
-          .eq('is_default', true)
-          .single();
-
-        if (data) {
-          setCustomWish(data as CustomWish);
-        } else {
-          // If no default, get the first wish
-          const { data: allData } = await supabase
-            .from('custom_wishes')
-            .select('*')
-            .limit(1)
-            .single();
-          if (allData) {
-            setCustomWish(allData as CustomWish);
-          }
+    try {
+      const raw = localStorage.getItem('custom_wishes');
+      if (raw) {
+        const wishes: (CustomWish & { is_default?: boolean })[] = JSON.parse(raw);
+        // Find the default wish, or use the first one
+        const defaultWish = wishes.find(w => w.is_default) || wishes[0];
+        if (defaultWish) {
+          setCustomWish(defaultWish);
         }
-      } catch (error) {
-        console.log('[v0] Using default wish - custom wishes not available');
       }
-    };
-
-    fetchCustomWish();
+    } catch {
+      // No custom wishes - use built-in defaults
+    }
   }, []);
 
   // Track page view on mount
@@ -110,6 +94,8 @@ export default function App() {
 
   const handleMusicStart = () => {
     setShowHearts(true);
+    // Actually start the background music via ActionButtons ref
+    actionButtonsRef.current?.play();
   };
 
   return (
@@ -160,17 +146,14 @@ export default function App() {
       {/* Action Buttons - Fixed at bottom */}
       <ActionButtons 
         ref={actionButtonsRef}
-        onShare={() => setShowShareDialog(true)}
-        currentScreen={currentScreen}
+        onShareClick={() => setShowShareDialog(true)}
+        showShareButton={true}
       />
 
       {/* Share Dialog */}
       <ShareDialog
-        open={showShareDialog}
-        onOpenChange={setShowShareDialog}
-        recipientName={urlParams.recipientName}
-        customMessage={urlParams.customMessage}
-        senderName={urlParams.senderName}
+        isOpen={showShareDialog}
+        onClose={() => setShowShareDialog(false)}
       />
     </div>
   );
