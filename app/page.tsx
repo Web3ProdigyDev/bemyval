@@ -1,6 +1,9 @@
+'use client';
+
 import { useState, useRef, useMemo, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
 import FloatingHearts from '@/components/valentine/FloatingHearts';
 import GiftBoxScreen from '@/components/valentine/GiftBoxScreen';
 import EnvelopeScreen from '@/components/valentine/EnvelopeScreen';
@@ -9,10 +12,22 @@ import CelebrationScreen from '@/components/valentine/CelebrationScreen';
 import ActionButtons, { ActionButtonsHandle } from '@/components/valentine/ActionButtons';
 import ShareDialog from '@/components/valentine/ShareDialog';
 import CursorSparkles from '@/components/valentine/CursorSparkles';
+import FloatingMessages from '@/components/valentine/FloatingMessages';
 import useVisitorTracking from '@/hooks/useVisitorTracking';
 import useMediaPreloader from '@/hooks/useMediaPreloader';
 
 type Screen = 'giftbox' | 'envelope' | 'question' | 'celebration';
+
+interface CustomWish {
+  id: string;
+  title: string;
+  subtitle: string;
+  main_message: string;
+  heart_message: string;
+  love_message: string;
+  footer_message: string;
+  website_name: string;
+}
 
 // Decode URL params (reverse of encodeParam in ShareDialog)
 const decodeParam = (str: string): string => {
@@ -31,16 +46,49 @@ const decodeParam = (str: string): string => {
   }
 };
 
-const Index = () => {
+export default function Home() {
   const [searchParams] = useSearchParams();
   const [currentScreen, setCurrentScreen] = useState<Screen>('giftbox');
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
+  const [customWish, setCustomWish] = useState<CustomWish | null>(null);
   const actionButtonsRef = useRef<ActionButtonsHandle>(null);
   const { trackPageView, trackYes, trackShare, trackScreenChange } = useVisitorTracking();
   
   // Preload all media assets on mount
   useMediaPreloader();
+
+  // Fetch custom wishes on mount
+  useEffect(() => {
+    const fetchCustomWish = async () => {
+      try {
+        // Try to get the default wish or first wish
+        const { data } = await supabase
+          .from('custom_wishes')
+          .select('*')
+          .eq('is_default', true)
+          .single();
+
+        if (data) {
+          setCustomWish(data as CustomWish);
+        } else {
+          // If no default, get the first wish
+          const { data: allData } = await supabase
+            .from('custom_wishes')
+            .select('*')
+            .limit(1)
+            .single();
+          if (allData) {
+            setCustomWish(allData as CustomWish);
+          }
+        }
+      } catch (error) {
+        console.log('[v0] Using default wish - custom wishes not available');
+      }
+    };
+
+    fetchCustomWish();
+  }, []);
 
   // Track page view on mount
   useEffect(() => {
@@ -53,61 +101,26 @@ const Index = () => {
     if (currentScreen === 'celebration') {
       trackYes();
     }
-  }, [currentScreen]);
+  }, [currentScreen, trackScreenChange, trackYes]);
 
-  // Parse URL parameters - support both old and new encoded format
+  // Parse URL params
   const urlParams = useMemo(() => {
-    // Try new encoded format first (r, m, s)
-    let recipientName = searchParams.get('r') ? decodeParam(searchParams.get('r')!) : null;
-    let customMessage = searchParams.get('m') ? decodeParam(searchParams.get('m')!) : null;
-    let senderName = searchParams.get('s') ? decodeParam(searchParams.get('s')!) : null;
-    
-    // Fallback to old format (to, msg, from)
-    if (!recipientName) recipientName = searchParams.get('to');
-    if (!customMessage) customMessage = searchParams.get('msg');
-    if (!senderName) senderName = searchParams.get('from');
-    
-    return {
-      recipientName: recipientName || undefined,
-      customMessage: customMessage || undefined,
-      senderName: senderName || undefined,
-    };
+    const recipientName = searchParams?.get('to') ? decodeParam(searchParams.get('to')!) : undefined;
+    const customMessage = searchParams?.get('msg') ? decodeParam(searchParams.get('msg')!) : undefined;
+    const senderName = searchParams?.get('from') ? decodeParam(searchParams.get('from')!) : undefined;
+    return { recipientName, customMessage, senderName };
   }, [searchParams]);
 
-  // Start music when envelope opens
   const handleMusicStart = () => {
-    actionButtonsRef.current?.play();
-    setShowHearts(true); // Show valentine hearts when music starts
-  };
-
-  // Handle share dialog with tracking
-  const handleShareClick = () => {
-    trackShare();
-    setShowShareDialog(true);
+    setShowHearts(true);
   };
 
   return (
-    <div className={`min-h-screen overflow-hidden relative transition-colors duration-1000 ${
-      showHearts ? 'bg-blush-gradient' : 'bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100'
-    }`}>
-      {/* Cursor Sparkles Effect */}
+    <div className="relative min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 overflow-hidden">
+      {/* Animated background */}
+      <FloatingHearts />
+      <FloatingMessages />
       <CursorSparkles />
-
-      {/* Action Buttons - Share & Mute grouped together with proper spacing */}
-      <ActionButtons 
-        ref={actionButtonsRef}
-        showShareButton={currentScreen === 'celebration'}
-        onShareClick={handleShareClick}
-      />
-
-      {/* Floating Hearts Background - only show after envelope opens */}
-      {showHearts && <FloatingHearts />}
-
-      {/* Share Dialog */}
-      <ShareDialog 
-        isOpen={showShareDialog} 
-        onClose={() => setShowShareDialog(false)} 
-      />
 
       {/* Main Content */}
       <AnimatePresence mode="wait">
@@ -123,6 +136,7 @@ const Index = () => {
             onOpen={() => setCurrentScreen('question')}
             onMusicStart={handleMusicStart}
             recipientName={urlParams.recipientName}
+            customWish={customWish}
           />
         )}
         {currentScreen === 'question' && (
@@ -132,6 +146,7 @@ const Index = () => {
             recipientName={urlParams.recipientName}
             customMessage={urlParams.customMessage}
             senderName={urlParams.senderName}
+            customWish={customWish}
           />
         )}
         {currentScreen === 'celebration' && (
@@ -140,11 +155,26 @@ const Index = () => {
             recipientName={urlParams.recipientName}
             customMessage={urlParams.customMessage}
             senderName={urlParams.senderName}
+            customWish={customWish}
           />
         )}
       </AnimatePresence>
+
+      {/* Action Buttons - Fixed at bottom */}
+      <ActionButtons 
+        ref={actionButtonsRef}
+        onShare={() => setShowShareDialog(true)}
+        currentScreen={currentScreen}
+      />
+
+      {/* Share Dialog */}
+      <ShareDialog
+        open={showShareDialog}
+        onOpenChange={setShowShareDialog}
+        recipientName={urlParams.recipientName}
+        customMessage={urlParams.customMessage}
+        senderName={urlParams.senderName}
+      />
     </div>
   );
-};
-
-export default Index;
+}

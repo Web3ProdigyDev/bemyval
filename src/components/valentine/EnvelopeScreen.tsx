@@ -3,13 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { playEnvelopeOpenSound } from '@/lib/romanticSounds';
 import { getRandomItem, envelopeTitles, envelopeRevealTitles, letterPreviewTexts } from '@/lib/randomContent';
 
+interface CustomWish {
+  id: string;
+  title: string;
+  subtitle: string;
+  main_message: string;
+  heart_message: string;
+  love_message: string;
+  footer_message: string;
+  website_name: string;
+}
+
 interface EnvelopeScreenProps {
   onOpen: () => void;
   onMusicStart: () => void;
   recipientName?: string;
+  customWish?: CustomWish | null;
 }
 
-const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenProps) => {
+const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName, customWish }: EnvelopeScreenProps) => {
   const [isOpening, setIsOpening] = useState(false);
   const [showLetter, setShowLetter] = useState(false);
   const [showHint, setShowHint] = useState(false);
@@ -55,11 +67,11 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.1 }}
       transition={{ type: "spring", bounce: 0.3 }}
-      className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-4 py-4 sm:py-6"
+      className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-4 py-2 sm:py-4 overflow-x-hidden overflow-y-auto gap-1 sm:gap-3"
     >
       {/* Title changes when opening */}
       <motion.h1
-        className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2"
+        className="text-sm sm:text-2xl md:text-3xl font-bold text-center px-2 leading-tight"
         animate={{ 
           color: isOpening ? 'hsl(var(--primary))' : 'hsl(var(--foreground))'
         }}
@@ -78,7 +90,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
 
       {recipientName && (
         <motion.p
-          className="text-base sm:text-lg text-muted-foreground mb-4"
+          className="text-xs sm:text-sm text-muted-foreground break-words text-balance max-w-sm px-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
@@ -89,21 +101,21 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
 
       {/* Envelope Container */}
       <motion.div
-        className="relative cursor-pointer mt-2"
+        className="relative cursor-pointer flex-1 flex items-center justify-center w-full"
         onClick={handleOpen}
         whileHover={!isOpening ? { scale: 1.03, y: -5 } : {}}
         whileTap={!isOpening ? { scale: 0.98 } : {}}
       >
         {/* Shadow */}
         <motion.div
-          className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-48 h-8 bg-black/15 rounded-full blur-xl"
-          animate={isOpening ? { opacity: 0, scale: 1.5 } : { scale: [1, 1.1, 1] }}
-          transition={{ duration: 2, repeat: isOpening ? 0 : Infinity }}
+          className="absolute -bottom-4 sm:-bottom-6 left-1/2 -translate-x-1/2 w-32 sm:w-48 h-6 sm:h-8 bg-black/15 rounded-full blur-xl will-change-transform"
+          animate={isOpening ? { opacity: 0, scale: 1.5 } : { scale: [1, 1.05, 1] }}
+          transition={{ duration: 2.5, repeat: isOpening ? 0 : Infinity }}
         />
 
         {/* Envelope */}
         <motion.div
-          className="relative w-64 h-44 sm:w-80 sm:h-56 md:w-96 md:h-64"
+          className="relative w-48 h-36 sm:w-80 sm:h-56 md:w-96 md:h-64"
           animate={isOpening ? { y: 20 } : {}}
         >
           {/* Envelope body */}
@@ -113,15 +125,14 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
             
             {/* Heart seal */}
             <motion.div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-4xl sm:text-5xl"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-4xl sm:text-5xl will-change-transform"
               animate={isOpening ? { 
-                scale: [1, 1.5, 0],
-                rotate: 360,
+                scale: [1, 1.3, 0],
                 opacity: 0 
               } : { 
-                scale: [1, 1.15, 1]
+                scale: [1, 1.1, 1]
               }}
-              transition={isOpening ? { duration: 0.5 } : { duration: 1.5, repeat: Infinity }}
+              transition={isOpening ? { duration: 0.5 } : { duration: 2, repeat: Infinity }}
             >
               💌
             </motion.div>
@@ -155,9 +166,9 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
           <AnimatePresence>
             {showLetter && (
               <motion.div
-                className="absolute left-1/2 -translate-x-1/2 w-[85%] bg-white rounded-lg shadow-lg p-4 sm:p-6 z-30"
+                className="absolute left-1/2 -translate-x-1/2 w-[85%] max-w-xs sm:max-w-sm bg-white rounded-lg shadow-lg p-2 sm:p-5 z-30 overflow-hidden"
                 initial={{ y: 20, opacity: 0 }}
-                animate={{ y: -120, opacity: 1 }}
+                animate={{ y: -80, opacity: 1 }}
                 transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
               >
                 {/* Letter content preview */}
@@ -165,40 +176,40 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="text-center"
+                  className="text-center overflow-hidden"
                 >
                   <motion.p
-                    className="text-primary font-romantic text-xl sm:text-2xl md:text-3xl"
+                    className="text-primary font-romantic text-sm sm:text-lg md:text-xl break-words text-balance line-clamp-2 sm:line-clamp-3 px-1"
                     animate={{
                       textShadow: [
-                        "0 0 10px rgba(255,107,138,0.3)",
-                        "0 0 20px rgba(255,107,138,0.6)",
-                        "0 0 10px rgba(255,107,138,0.3)",
+                        "0 0 8px rgba(255,107,138,0.2)",
+                        "0 0 15px rgba(255,107,138,0.4)",
+                        "0 0 8px rgba(255,107,138,0.2)",
                       ],
                     }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
+                    transition={{ duration: 2, repeat: Infinity }}
                   >
                     {content.letterPreview}
                   </motion.p>
                   
                   <motion.div
-                    className="flex justify-center gap-2 mt-3"
+                    className="flex justify-center gap-2 mt-2 sm:mt-3"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.5, type: "spring" }}
                   >
-                    {['💕', '💖', '💕'].map((heart, i) => (
+                    {['💕', '💖'].map((heart, i) => (
                       <motion.span
                         key={i}
-                        className="text-2xl"
+                        className="text-xl sm:text-2xl will-change-transform"
                         animate={{ 
-                          y: [0, -5, 0],
-                          scale: [1, 1.2, 1],
+                          y: [0, -4, 0],
+                          scale: [1, 1.1, 1],
                         }}
                         transition={{ 
-                          duration: 0.8, 
+                          duration: 1, 
                           repeat: Infinity, 
-                          delay: i * 0.15 
+                          delay: i * 0.2 
                         }}
                       >
                         {heart}
@@ -216,20 +227,21 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       <AnimatePresence>
         {showVolumeHint && !isOpening && (
           <motion.div
-            className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg border border-border/50"
+            className="fixed bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm px-2 py-1 sm:px-3 sm:py-1.5 rounded-full shadow-lg border border-border/50 text-xs"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ delay: 0.5 }}
           >
-            <p className="text-muted-foreground text-xs flex items-center gap-2">
+            <p className="text-muted-foreground flex items-center gap-1 sm:gap-2">
               <motion.span
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
               >
                 🔊
               </motion.span>
-              Turn up volume
+              <span className="hidden sm:inline">Turn up volume</span>
+              <span className="sm:hidden">Volume on</span>
             </p>
           </motion.div>
         )}
@@ -239,7 +251,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       <AnimatePresence>
         {showHint && !isOpening && (
           <motion.p
-            className="mt-4 text-muted-foreground text-xs sm:text-sm flex items-center gap-2"
+            className="text-muted-foreground text-xs flex items-center gap-1 sm:gap-2 px-2"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
@@ -250,7 +262,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
             >
               💌
             </motion.span>
-            Tap to open the letter
+            <span>Tap to open</span>
           </motion.p>
         )}
       </AnimatePresence>
@@ -259,29 +271,28 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenP
       <AnimatePresence>
         {isOpening && (
           <>
-            {[...Array(20)].map((_, i) => (
+            {[...Array(12)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute text-xl sm:text-2xl pointer-events-none"
+                className="absolute text-lg sm:text-xl pointer-events-none will-change-transform"
                 style={{
                   left: '50%',
                   top: '50%',
                 }}
                 initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
                 animate={{
-                  x: (Math.random() - 0.5) * 300,
-                  y: (Math.random() - 0.5) * 300 - 100,
-                  opacity: [0, 1, 0],
-                  scale: [0, 1, 0.5],
-                  rotate: Math.random() * 360,
+                  x: (Math.random() - 0.5) * 250,
+                  y: (Math.random() - 0.5) * 250 - 80,
+                  opacity: [0, 0.8, 0],
+                  scale: [0, 1, 0.3],
                 }}
                 transition={{ 
-                  duration: 1.5, 
-                  delay: 0.5 + i * 0.05,
+                  duration: 1.2, 
+                  delay: 0.5 + i * 0.06,
                   ease: "easeOut"
                 }}
               >
-                {['💕', '💖', '💗', '❤️', '💘', '✨'][i % 6]}
+                {['💕', '💖', '💗', '❤️'][i % 4]}
               </motion.div>
             ))}
           </>

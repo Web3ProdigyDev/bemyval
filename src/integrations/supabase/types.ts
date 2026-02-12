@@ -20,18 +20,117 @@ export type Database = {
           id: string
           name: string
           phone: string
+          custom_text?: string | null
+          recipient_name?: string | null
+          sender_name?: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           name: string
           phone: string
+          custom_text?: string | null
+          recipient_name?: string | null
+          sender_name?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
           phone?: string
+          custom_text?: string | null
+          recipient_name?: string | null
+          sender_name?: string | null
+        }
+        Relationships: []
+      }
+      valentine_analytics: {
+        Row: {
+          id: string
+          session_id: string
+          recipient_name: string | null
+          sender_name: string | null
+          custom_message: string | null
+          page_view: boolean
+          said_yes: boolean
+          said_no_count: number
+          shared: boolean
+          screen_changes: string[] | null
+          created_at: string
+          updated_at: string
+          last_interaction: string
+        }
+        Insert: {
+          id?: string
+          session_id: string
+          recipient_name?: string | null
+          sender_name?: string | null
+          custom_message?: string | null
+          page_view?: boolean
+          said_yes?: boolean
+          said_no_count?: number
+          shared?: boolean
+          screen_changes?: string[] | null
+          created_at?: string
+          updated_at?: string
+          last_interaction?: string
+        }
+        Update: {
+          id?: string
+          session_id?: string
+          recipient_name?: string | null
+          sender_name?: string | null
+          custom_message?: string | null
+          page_view?: boolean
+          said_yes?: boolean
+          said_no_count?: number
+          shared?: boolean
+          screen_changes?: string[] | null
+          created_at?: string
+          updated_at?: string
+          last_interaction?: string
+        }
+        Relationships: []
+      }
+      custom_wishes: {
+        Row: {
+          id: string
+          title: string
+          subtitle: string
+          main_message: string
+          heart_message: string
+          love_message: string
+          footer_message: string
+          website_name: string
+          created_at: string
+          updated_at: string
+          is_default: boolean
+        }
+        Insert: {
+          id?: string
+          title: string
+          subtitle: string
+          main_message: string
+          heart_message: string
+          love_message: string
+          footer_message: string
+          website_name: string
+          created_at?: string
+          updated_at?: string
+          is_default?: boolean
+        }
+        Update: {
+          id?: string
+          title?: string
+          subtitle?: string
+          main_message?: string
+          heart_message?: string
+          love_message?: string
+          footer_message?: string
+          website_name?: string
+          created_at?: string
+          updated_at?: string
+          is_default?: boolean
         }
         Relationships: []
       }
