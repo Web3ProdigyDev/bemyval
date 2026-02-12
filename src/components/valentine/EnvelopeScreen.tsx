@@ -166,9 +166,9 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName, customWish }: Env
           <AnimatePresence>
             {showLetter && (
               <motion.div
-                className="absolute left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white rounded-lg shadow-lg p-3 sm:p-5 z-30 overflow-hidden"
+                className="absolute left-1/2 -translate-x-1/2 w-[85%] max-w-xs sm:max-w-sm bg-white rounded-lg shadow-lg p-2 sm:p-5 z-30 overflow-hidden"
                 initial={{ y: 20, opacity: 0 }}
-                animate={{ y: -120, opacity: 1 }}
+                animate={{ y: -80, opacity: 1 }}
                 transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
               >
                 {/* Letter content preview */}
@@ -179,7 +179,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName, customWish }: Env
                   className="text-center overflow-hidden"
                 >
                   <motion.p
-                    className="text-primary font-romantic text-base sm:text-lg md:text-xl break-words text-balance line-clamp-3"
+                    className="text-primary font-romantic text-sm sm:text-lg md:text-xl break-words text-balance line-clamp-2 sm:line-clamp-3 px-1"
                     animate={{
                       textShadow: [
                         "0 0 8px rgba(255,107,138,0.2)",
@@ -193,7 +193,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName, customWish }: Env
                   </motion.p>
                   
                   <motion.div
-                    className="flex justify-center gap-2 mt-3"
+                    className="flex justify-center gap-2 mt-2 sm:mt-3"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.5, type: "spring" }}
@@ -201,7 +201,7 @@ const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName, customWish }: Env
                     {['💕', '💖'].map((heart, i) => (
                       <motion.span
                         key={i}
-                        className="text-2xl will-change-transform"
+                        className="text-xl sm:text-2xl will-change-transform"
                         animate={{ 
                           y: [0, -4, 0],
                           scale: [1, 1.1, 1],

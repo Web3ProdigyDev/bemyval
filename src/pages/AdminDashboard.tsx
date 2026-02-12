@@ -1,7 +1,4 @@
-'use client';
-
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -45,17 +42,16 @@ export default function AdminDashboard() {
     footer_message: '',
     website_name: '',
   });
-  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
     if (!token) {
-      router.push('/supersecretadminloginplace');
+      window.location.href = '/supersecretadminloginplace';
     } else {
       loadWishes();
       loadAnalytics();
     }
-  }, [router]);
+  }, []);
 
   const loadAnalytics = async () => {
     try {
@@ -154,7 +150,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
-    router.push('/supersecretadminloginplace');
+    window.location.href = '/supersecretadminloginplace';
   };
 
   if (loading) {

@@ -27,16 +27,13 @@ export const useVisitorTracking = () => {
   const initializeSession = async () => {
     try {
       await supabase
-        .from('valentine_analytics')
+        .from('analytics')
         .insert({
           session_id: sessionId.current,
-          page_view: true,
-          screen_changes: ['giftbox'],
+          event_type: 'visit',
         })
-        .single()
         .catch(() => {
-          // Table might not exist yet or DB is down - that's ok
-          // We'll try again with next event
+          // Silently fail - site should work without analytics
         });
     } catch (e) {
       // Silently fail - site should work without analytics
@@ -59,33 +56,23 @@ export const useVisitorTracking = () => {
       hasTrackedVisit.current = true;
     }
 
-    // Defer database work - fire and forget with setTimeout to avoid blocking
-    // This ensures the main interaction completes before any DB call
+    // Defer database work - fire and forget to avoid blocking
     if (typeof window !== 'undefined') {
       setTimeout(() => {
         try {
-          const updateData: any = {
-            last_interaction: new Date().toISOString(),
-            screen_changes: screenHistory.current.slice(-10), // Keep only last 10 screens to save space
-          };
+          let eventType = 'interaction';
+          if (data.action === 'page_view') eventType = 'visit';
+          else if (data.action === 'said_yes') eventType = 'yes_click';
+          else if (data.action === 'shared') eventType = 'share';
+          else if (data.action === 'no_click') eventType = 'no_click';
 
-          if (data.action === 'page_view') {
-            updateData.page_view = true;
-          } else if (data.action === 'said_yes') {
-            updateData.said_yes = true;
-          } else if (data.action === 'shared') {
-            updateData.shared = true;
-          }
-
-          if (data.recipientName) updateData.recipient_name = data.recipientName;
-          if (data.senderName) updateData.sender_name = data.senderName;
-          if (data.noCount !== undefined) updateData.said_no_count = data.noCount;
-
-          // Non-blocking database update
+          // Insert lightweight event record
           supabase
-            .from('valentine_analytics')
-            .update(updateData)
-            .eq('session_id', sessionId.current)
+            .from('analytics')
+            .insert({
+              session_id: sessionId.current,
+              event_type: eventType,
+            })
             .catch(() => {
               // Database unavailable - local storage already has the data
             });
