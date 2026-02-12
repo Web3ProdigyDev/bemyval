@@ -74,8 +74,8 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
 
     const currentCount = escapeCount + 1;
     
-    // On 4th click, No button is on top of Yes - clicking it means Yes!
-    if (currentCount >= 4) {
+    // On 3rd+ escape (when No button is on top of Yes), clicking it or the Yes button = Yes!
+    if (currentCount >= 3) {
       handleYesClick();
       return;
     }
@@ -92,11 +92,6 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
     const newY = (Math.random() * 2 - 1) * maxY;
 
     setNoPosition({ x: newX, y: newY });
-
-    // On 3rd click, move No button on top of Yes button
-    if (currentCount === 3) {
-      setNoPosition({ x: 0, y: 0 });
-    }
 
     setEscapeCount((prev) => prev + 1);
     
@@ -249,8 +244,8 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
               style={{
                 transform: `translate(${noPosition.x}px, ${noPosition.y}px)`,
               }}
-              onMouseEnter={!isMobile ? moveNoButton : undefined}
-              onTouchStart={isMobile ? moveNoButton : undefined}
+              onMouseEnter={escapeCount < 3 && !isMobile ? moveNoButton : undefined}
+              onTouchStart={escapeCount < 3 && isMobile ? moveNoButton : undefined}
               onClick={moveNoButton}
             >
               <span>No 😢</span>

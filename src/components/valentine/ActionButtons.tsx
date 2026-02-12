@@ -81,65 +81,58 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-                className="flex flex-col items-center"
-              >
-                <motion.div
-                  className="bg-valentine-gradient text-primary-foreground px-8 py-6 rounded-full shadow-2xl flex flex-col items-center gap-4 pointer-events-auto cursor-pointer"
-                  onClick={onShareClick}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <motion.span
-                    className="text-5xl"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  >
-                    <Share2 className="w-12 h-12" />
-                  </motion.span>
-                  
-                  {/* Typewriter text */}
-                  <motion.div className="text-center">
-                    <motion.h3
-                      className="text-xl sm:text-2xl font-bold"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.3, duration: 0.5 }}
-                    >
-                      <motion.span className="inline-block">
-                        {"You can also share this with someone".split('').map((char, i) => (
-                          <motion.span
-                            key={i}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.4 + i * 0.04 }}
-                          >
-                            {char}
-                          </motion.span>
-                        ))}
-                      </motion.span>
-                    </motion.h3>
-                  </motion.div>
-                </motion.div>
-              </motion.div>
-
-              {/* Animate out to corner after 2 seconds */}
-              <motion.div
-                className="fixed top-4 right-4 sm:top-6 sm:right-6 pointer-events-auto"
-                initial={{ opacity: 0, scale: 1, x: 0, y: 0 }}
+              <motion.button
+                className="bg-valentine-gradient text-primary-foreground px-8 py-6 rounded-full shadow-2xl flex flex-col items-center gap-4 pointer-events-auto cursor-pointer font-bold"
+                onClick={onShareClick}
+                initial={{ opacity: 0, scale: 0.3, x: 0, y: 0 }}
                 animate={{
                   opacity: 1,
                   scale: 1,
-                  x: typeof window !== 'undefined' ? window.innerWidth / 2 - 100 : 0,
-                  y: typeof window !== 'undefined' ? window.innerHeight / 2 - 100 : 0,
+                  x: 0,
+                  y: 0,
                 }}
-                transition={{ delay: 2, duration: 0.8, ease: "easeInOut" }}
+                transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {/* This will be replaced by the permanent button */}
-              </motion.div>
+                <motion.span
+                  className="text-5xl"
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                >
+                  <Share2 className="w-12 h-12" />
+                </motion.span>
+                
+                {/* Typewriter text */}
+                <motion.h3 className="text-xl sm:text-2xl text-center">
+                  <motion.span className="inline-block">
+                    {"You can also share this with someone".split('').map((char, i) => (
+                      <motion.span
+                        key={i}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 + i * 0.04 }}
+                      >
+                        {char}
+                      </motion.span>
+                    ))}
+                  </motion.span>
+                </motion.h3>
+
+                {/* Shrink and move to top-right after text finishes (2s + 0.2s buffer) */}
+                <motion.div
+                  initial={{ opacity: 1, scale: 1 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 0.5,
+                  }}
+                  transition={{
+                    delay: 2.2,
+                    duration: 0.8,
+                    ease: "easeInOut"
+                  }}
+                />
+              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
