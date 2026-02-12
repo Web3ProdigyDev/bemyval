@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -52,8 +52,6 @@
     "input-otp": "^1.4.2",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.462.0",
-    "next": "^16.1.6",
-    "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -74,11 +72,12 @@
     "@types/node": "^22.16.5",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react-swc": "^3.7.1",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.32.0",
-    "eslint-config-next": "^16.1.6",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^6.0.5"
   }
 }
