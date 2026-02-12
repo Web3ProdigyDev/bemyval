@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Copy, Check, X, User, UserX } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 interface ShareDialogProps {
   isOpen: boolean;
@@ -10,10 +9,7 @@ interface ShareDialogProps {
 }
 
 // Published URL - use this for share links
-const PUBLISHED_URL = 'https://yoursurprise.lovable.app';
-
-// Inspired Devs contact information
-const INSPIRED_DEVS_WHATSAPP = "+2349019459804";
+const PUBLISHED_URL = 'https://ursurprisegift.vercel.app';
 
 // Simple encoding for URL params (makes link shorter and less obvious)
 const encodeParam = (str: string): string => {
@@ -48,56 +44,39 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
   const shareLink = generateShareLink();
 
   const saveSenderInfo = async () => {
-    // Only save if they provided info (anonymous users don't need to)
-    if (isAnonymous) {
-      // Still save recipient and message in analytics
-      try {
-        const { error } = await supabase
-          .from('valentine_visitors')
-          .insert({
-            name: 'Anonymous',
-            phone: 'N/A',
-            recipient_name: recipientName.trim().slice(0, 100),
-            custom_text: customMessage.trim().slice(0, 100),
-          });
-        
-        if (error && error.code !== 'PGRST116') throw error; // Ignore if table doesn't exist
-        return true;
-      } catch (error) {
-        console.error('Error saving anonymous share:', error);
-        return true; // Gracefully degrade
+    // Validate phone if not anonymous and provided
+    if (!isAnonymous && senderPhone.trim()) {
+      const phoneRegex = /^[\d\s\-+()]{7,20}$/;
+      if (!phoneRegex.test(senderPhone.trim())) {
+        toast({
+          title: "Invalid phone number",
+          description: "Please enter a valid phone number",
+          variant: "destructive",
+        });
+        return false;
       }
     }
-    
-    if (!senderName.trim() || !senderPhone.trim()) return true;
-    
-    const phoneRegex = /^[\d\s\-+()]{7,20}$/;
-    if (!phoneRegex.test(senderPhone.trim())) {
-      toast({
-        title: "Invalid phone number",
-        description: "Please enter a valid phone number",
-        variant: "destructive",
-      });
-      return false;
-    }
 
+    // Save share data to localStorage for admin tracking
     try {
-      const { error } = await supabase
-        .from('valentine_visitors')
-        .insert({
-          name: senderName.trim().slice(0, 100),
-          phone: senderPhone.trim().slice(0, 20),
-          recipient_name: recipientName.trim().slice(0, 100),
-          sender_name: senderName.trim().slice(0, 100),
-          custom_text: customMessage.trim().slice(0, 100),
-        });
-
-      if (error && error.code !== 'PGRST116') throw error; // Ignore if table doesn't exist
-      return true;
-    } catch (error) {
-      console.error('Error saving sender:', error);
-      return true; // Gracefully degrade - don't block sharing
+      const sharesKey = 'valentine_shares';
+      const existing = localStorage.getItem(sharesKey);
+      const shares = existing ? JSON.parse(existing) : [];
+      shares.push({
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        recipientName: recipientName.trim(),
+        customMessage: customMessage.trim(),
+        senderName: isAnonymous ? 'Anonymous' : senderName.trim(),
+        senderPhone: isAnonymous ? '' : senderPhone.trim(),
+        isAnonymous,
+        shareLink: generateShareLink(),
+      });
+      localStorage.setItem(sharesKey, JSON.stringify(shares));
+    } catch {
+      // localStorage full or disabled - continue anyway
     }
+    return true;
   };
 
   const copyToClipboard = async () => {
@@ -150,7 +129,7 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
     if (!saved) return;
 
     const message = `Hey ${recipientName}! 🎁 Someone has a surprise for you... ${shareLink}`;
-    window.open(`https://wa.me/${INSPIRED_DEVS_WHATSAPP.replace("+", "")}?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const shareNative = async () => {

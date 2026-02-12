@@ -86,9 +86,10 @@ export default function App() {
   // Parse URL params using standard URLSearchParams
   const urlParams = useMemo(() => {
     const params = new URLSearchParams(window.location.search);
-    const recipientName = params.get('to') ? decodeParam(params.get('to')!) : undefined;
-    const customMessage = params.get('msg') ? decodeParam(params.get('msg')!) : undefined;
-    const senderName = params.get('from') ? decodeParam(params.get('from')!) : undefined;
+    // ShareDialog uses r, m, s as param keys
+    const recipientName = params.get('r') ? decodeParam(params.get('r')!) : (params.get('to') ? decodeParam(params.get('to')!) : undefined);
+    const customMessage = params.get('m') ? decodeParam(params.get('m')!) : (params.get('msg') ? decodeParam(params.get('msg')!) : undefined);
+    const senderName = params.get('s') ? decodeParam(params.get('s')!) : (params.get('from') ? decodeParam(params.get('from')!) : undefined);
     return { recipientName, customMessage, senderName };
   }, []);
 
@@ -143,11 +144,11 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Action Buttons - Fixed at bottom */}
+      {/* Action Buttons - Share button only shows after they click Yes */}
       <ActionButtons 
         ref={actionButtonsRef}
         onShareClick={() => setShowShareDialog(true)}
-        showShareButton={true}
+        showShareButton={currentScreen === 'celebration'}
       />
 
       {/* Share Dialog */}
