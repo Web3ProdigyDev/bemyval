@@ -27,18 +27,20 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
   const { toast } = useToast();
 
   const generateShareLink = () => {
-    if (!recipientName.trim()) return '';
-    
     // Use encoded, shorter params: r=recipient, m=message, s=sender
     const params = new URLSearchParams();
-    params.set('r', encodeParam(recipientName.trim()));
+    if (recipientName.trim()) {
+      params.set('r', encodeParam(recipientName.trim()));
+    }
     if (customMessage.trim()) {
       params.set('m', encodeParam(customMessage.trim()));
     }
     if (!isAnonymous && senderName.trim()) {
       params.set('s', encodeParam(senderName.trim()));
     }
-    return `${PUBLISHED_URL}?${params.toString()}`;
+    const baseUrl = PUBLISHED_URL;
+    const queryString = params.toString();
+    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
   };
 
   const shareLink = generateShareLink();
@@ -80,15 +82,6 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
   };
 
   const copyToClipboard = async () => {
-    if (!shareLink) {
-      toast({
-        title: "Enter recipient's name first!",
-        description: "Who are you sending this to? 💕",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
     const saved = await saveSenderInfo();
     setIsSubmitting(false);
@@ -113,35 +106,18 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
   };
 
   const shareViaWhatsApp = async () => {
-    if (!shareLink) {
-      toast({
-        title: "Enter recipient's name first!",
-        description: "Who are you sending this to? 💕",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     setIsSubmitting(true);
     const saved = await saveSenderInfo();
     setIsSubmitting(false);
     
     if (!saved) return;
 
-    const message = `Hey ${recipientName}! 🎁 Someone has a surprise for you... ${shareLink}`;
+    const greeting = recipientName.trim() ? `Hey ${recipientName}!` : 'Hey there!';
+    const message = `${greeting} 🎁 Someone has a surprise for you... ${shareLink}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const shareNative = async () => {
-    if (!shareLink) {
-      toast({
-        title: "Enter recipient's name first!",
-        description: "Who are you sending this to? 💕",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
     const saved = await saveSenderInfo();
     setIsSubmitting(false);
@@ -150,9 +126,11 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
 
     if (navigator.share) {
       try {
+        const title = recipientName.trim() ? `${recipientName}, you have a surprise! 🎁` : 'You have a surprise! 🎁';
+        const text = recipientName.trim() ? `Hey ${recipientName}! Open this... it's special!` : 'Check out this surprise!';
         await navigator.share({
-          title: `${recipientName}, you have a surprise! 🎁`,
-          text: `Hey ${recipientName}! Open this... it's special!`,
+          title,
+          text,
           url: shareLink,
         });
       } catch (err) {
@@ -208,14 +186,14 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
           {/* Recipient name input */}
           <div className="mb-3">
             <label className="block text-sm font-medium text-foreground mb-1">
-              Who's the lucky one? 💕
+              Who's the lucky one? 💕 <span className="text-xs text-muted-foreground font-normal">(optional)</span>
             </label>
             <input
               type="text"
               value={recipientName}
               onChange={(e) => setRecipientName(e.target.value)}
               className="w-full px-4 py-2.5 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-              placeholder="Enter their name..."
+              placeholder="Enter their name (or share anonymously)..."
               maxLength={30}
             />
           </div>
@@ -326,7 +304,7 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
           </AnimatePresence>
 
           {/* Preview */}
-          {recipientName.trim() && (
+          {(recipientName.trim() || customMessage.trim() || (!isAnonymous && senderName.trim())) && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -334,7 +312,7 @@ const ShareDialog = ({ isOpen, onClose }: ShareDialogProps) => {
             >
               <p className="text-xs text-muted-foreground mb-1">They'll see:</p>
               <p className="text-sm text-foreground font-medium">
-                "Hey {recipientName}! Will You Be My Valentine? 💕"
+                {recipientName.trim() ? `"Hey ${recipientName}! Will You Be My Valentine? 💕"` : '"Will You Be My Valentine? 💕"'}
               </p>
               {customMessage.trim() && (
                 <p className="text-xs text-foreground/70 mt-1 italic">
