@@ -92,6 +92,48 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_wishes: {
+        Row: {
+          id: string
+          title: string
+          subtitle: string
+          main_message: string
+          heart_message: string
+          love_message: string
+          footer_message: string
+          website_name: string
+          created_at: string
+          updated_at: string
+          is_default: boolean
+        }
+        Insert: {
+          id?: string
+          title: string
+          subtitle: string
+          main_message: string
+          heart_message: string
+          love_message: string
+          footer_message: string
+          website_name: string
+          created_at?: string
+          updated_at?: string
+          is_default?: boolean
+        }
+        Update: {
+          id?: string
+          title?: string
+          subtitle?: string
+          main_message?: string
+          heart_message?: string
+          love_message?: string
+          footer_message?: string
+          website_name?: string
+          created_at?: string
+          updated_at?: string
+          is_default?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

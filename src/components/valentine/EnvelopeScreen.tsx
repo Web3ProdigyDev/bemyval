@@ -3,13 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { playEnvelopeOpenSound } from '@/lib/romanticSounds';
 import { getRandomItem, envelopeTitles, envelopeRevealTitles, letterPreviewTexts } from '@/lib/randomContent';
 
+interface CustomWish {
+  id: string;
+  title: string;
+  subtitle: string;
+  main_message: string;
+  heart_message: string;
+  love_message: string;
+  footer_message: string;
+  website_name: string;
+}
+
 interface EnvelopeScreenProps {
   onOpen: () => void;
   onMusicStart: () => void;
   recipientName?: string;
+  customWish?: CustomWish | null;
 }
 
-const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName }: EnvelopeScreenProps) => {
+const EnvelopeScreen = ({ onOpen, onMusicStart, recipientName, customWish }: EnvelopeScreenProps) => {
   const [isOpening, setIsOpening] = useState(false);
   const [showLetter, setShowLetter] = useState(false);
   const [showHint, setShowHint] = useState(false);

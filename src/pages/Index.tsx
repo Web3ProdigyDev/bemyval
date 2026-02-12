@@ -1,6 +1,7 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
 import FloatingHearts from '@/components/valentine/FloatingHearts';
 import GiftBoxScreen from '@/components/valentine/GiftBoxScreen';
 import EnvelopeScreen from '@/components/valentine/EnvelopeScreen';
@@ -13,6 +14,17 @@ import useVisitorTracking from '@/hooks/useVisitorTracking';
 import useMediaPreloader from '@/hooks/useMediaPreloader';
 
 type Screen = 'giftbox' | 'envelope' | 'question' | 'celebration';
+
+interface CustomWish {
+  id: string;
+  title: string;
+  subtitle: string;
+  main_message: string;
+  heart_message: string;
+  love_message: string;
+  footer_message: string;
+  website_name: string;
+}
 
 // Decode URL params (reverse of encodeParam in ShareDialog)
 const decodeParam = (str: string): string => {
@@ -36,11 +48,44 @@ const Index = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('giftbox');
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
+  const [customWish, setCustomWish] = useState<CustomWish | null>(null);
   const actionButtonsRef = useRef<ActionButtonsHandle>(null);
   const { trackPageView, trackYes, trackShare, trackScreenChange } = useVisitorTracking();
   
   // Preload all media assets on mount
   useMediaPreloader();
+
+  // Fetch custom wishes on mount
+  useEffect(() => {
+    const fetchCustomWish = async () => {
+      try {
+        // Try to get the default wish or first wish
+        const { data, error } = await supabase
+          .from('custom_wishes')
+          .select('*')
+          .eq('is_default', true)
+          .single();
+
+        if (data) {
+          setCustomWish(data as CustomWish);
+        } else {
+          // If no default, get the first wish
+          const { data: allData } = await supabase
+            .from('custom_wishes')
+            .select('*')
+            .limit(1)
+            .single();
+          if (allData) {
+            setCustomWish(allData as CustomWish);
+          }
+        }
+      } catch (error) {
+        console.log('[v0] Using default wish - custom wishes not available');
+      }
+    };
+
+    fetchCustomWish();
+  }, []);
 
   // Track page view on mount
   useEffect(() => {
@@ -123,6 +168,7 @@ const Index = () => {
             onOpen={() => setCurrentScreen('question')}
             onMusicStart={handleMusicStart}
             recipientName={urlParams.recipientName}
+            customWish={customWish}
           />
         )}
         {currentScreen === 'question' && (
@@ -132,6 +178,7 @@ const Index = () => {
             recipientName={urlParams.recipientName}
             customMessage={urlParams.customMessage}
             senderName={urlParams.senderName}
+            customWish={customWish}
           />
         )}
         {currentScreen === 'celebration' && (
@@ -140,6 +187,7 @@ const Index = () => {
             recipientName={urlParams.recipientName}
             customMessage={urlParams.customMessage}
             senderName={urlParams.senderName}
+            customWish={customWish}
           />
         )}
       </AnimatePresence>
