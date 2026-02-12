@@ -26,6 +26,8 @@ export const useMediaPreloader = () => {
     if (hasStarted.current) return;
     hasStarted.current = true;
 
+    console.log('[v0] Starting media preload. Assets to load:', MEDIA_ASSETS);
+
     const totalAssets = Object.keys(MEDIA_ASSETS).length;
     const loaded: string[] = [];
 
@@ -48,8 +50,18 @@ export const useMediaPreloader = () => {
       video.muted = true;
       video.playsInline = true;
       
-      video.addEventListener('canplaythrough', () => updateProgress(name), { once: true });
-      video.addEventListener('error', () => updateProgress(name), { once: true }); // Count as loaded even on error
+      const onLoad = () => {
+        console.log('[v0] Video loaded:', name);
+        updateProgress(name);
+      };
+      
+      const onError = () => {
+        console.warn('[v0] Video failed to load:', name, src);
+        updateProgress(name); // Count as loaded even on error to not block app
+      };
+      
+      video.addEventListener('canplaythrough', onLoad, { once: true });
+      video.addEventListener('error', onError, { once: true });
       
       video.src = src;
       video.load();
@@ -60,8 +72,18 @@ export const useMediaPreloader = () => {
       const audio = document.createElement('audio');
       audio.preload = 'auto';
       
-      audio.addEventListener('canplaythrough', () => updateProgress(name), { once: true });
-      audio.addEventListener('error', () => updateProgress(name), { once: true });
+      const onLoad = () => {
+        console.log('[v0] Audio loaded:', name);
+        updateProgress(name);
+      };
+      
+      const onError = () => {
+        console.warn('[v0] Audio failed to load:', name, src);
+        updateProgress(name); // Count as loaded even on error to not block app
+      };
+      
+      audio.addEventListener('canplaythrough', onLoad, { once: true });
+      audio.addEventListener('error', onError, { once: true });
       
       audio.src = src;
       audio.load();

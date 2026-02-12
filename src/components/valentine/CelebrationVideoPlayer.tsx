@@ -37,17 +37,31 @@ const CelebrationVideoPlayer = () => {
 
     setHasError(false);
 
+    const handleError = () => {
+      console.warn('[v0] Video failed to load:', videoSources[currentPhase]);
+      setHasError(true);
+    };
+
+    video.addEventListener('error', handleError);
+
     // Timeout for slow network
     const timeout = setTimeout(() => {
       if (video.readyState < 3) {
+        console.warn('[v0] Video loading timeout');
         setHasError(true);
       }
-    }, 10000);
+    }, 8000);
 
     video.load();
-    video.play().catch(() => {});
+    video.play().catch((e) => {
+      console.warn('[v0] Video play failed:', e);
+      setHasError(true);
+    });
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+      video.removeEventListener('error', handleError);
+    };
   }, [currentPhase]);
 
   return (

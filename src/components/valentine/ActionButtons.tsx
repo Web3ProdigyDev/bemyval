@@ -38,8 +38,13 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
         if (audioRef.current) {
           audioRef.current.volume = 0.3;
           audioRef.current.play()
-            .then(() => setIsPlaying(true))
-            .catch(() => {});
+            .then(() => {
+              console.log('[v0] Audio playing');
+              setIsPlaying(true);
+            })
+            .catch((e) => {
+              console.warn('[v0] Audio play failed:', e.message);
+            });
         }
       },
       pause: () => {
@@ -55,8 +60,13 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
         if (!isPlaying) {
           audioRef.current.volume = 0.3;
           audioRef.current.play()
-            .then(() => setIsPlaying(true))
-            .catch(() => {});
+            .then(() => {
+              console.log('[v0] Audio playing from toggle');
+              setIsPlaying(true);
+            })
+            .catch((e) => {
+              console.warn('[v0] Audio play failed from toggle:', e.message);
+            });
         }
         audioRef.current.muted = !audioRef.current.muted;
         setIsMuted(!isMuted);
