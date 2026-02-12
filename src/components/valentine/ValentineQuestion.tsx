@@ -40,7 +40,6 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
   const [escapeCount, setEscapeCount] = useState(0);
   const [currentMessage, setCurrentMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
-  const [showDoubleYes, setShowDoubleYes] = useState(false);
 
   // Random content - memoized
   const content = useMemo(() => ({
@@ -77,23 +76,28 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
 
     const currentCount = escapeCount + 1;
     
-    // On 4th escape, position button on top of Yes button, then hide it
-    if (currentCount === 4) {
-      setNoPosition({ x: 0, y: 0 });
-      // Will be hidden by showNoButton condition
-    } else {
-      // Keep button in safe visible zones - tighter constraints
-      const rect = container.getBoundingClientRect();
-      const padding = isMobile ? 40 : 60;
-      
-      // Constrain to visible safe area in center of screen
-      const maxX = Math.min(rect.width / 4, 80);
-      const maxY = Math.min(rect.height / 4, 60);
-      
-      const newX = (Math.random() * 2 - 1) * maxX;
-      const newY = (Math.random() * 2 - 1) * maxY;
+    // On 4th click, No button is on top of Yes - clicking it means Yes!
+    if (currentCount >= 4) {
+      handleYesClick();
+      return;
+    }
 
-      setNoPosition({ x: newX, y: newY });
+    // Keep button in safe visible zones - tighter constraints
+    const rect = container.getBoundingClientRect();
+    const padding = isMobile ? 40 : 60;
+    
+    // Constrain to visible safe area in center of screen
+    const maxX = Math.min(rect.width / 4, 80);
+    const maxY = Math.min(rect.height / 4, 60);
+    
+    const newX = (Math.random() * 2 - 1) * maxX;
+    const newY = (Math.random() * 2 - 1) * maxY;
+
+    setNoPosition({ x: newX, y: newY });
+
+    // On 3rd click, move No button on top of Yes button
+    if (currentCount === 3) {
+      setNoPosition({ x: 0, y: 0 });
     }
 
     setEscapeCount((prev) => prev + 1);
@@ -113,20 +117,9 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
     });
     
     setTimeout(() => setShowMessage(false), 1000);
-  }, [escapeCount, isMobile]);
+  }, [escapeCount, isMobile, handleYesClick]);
 
-  useEffect(() => {
-    if (escapeCount >= 4) {
-      setShowDoubleYes(true);
-      playSuccessSound();
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.6 },
-        colors: ['#ff6b8a', '#ff1744', '#ffc1e3'],
-      });
-    }
-  }, [escapeCount]);
+
 
   // Build personalized question
   const questionText = recipientName 
@@ -239,84 +232,42 @@ const ValentineQuestion = ({ onYesClick, recipientName, customMessage, senderNam
 
         {/* Buttons Container - Flexbox with gap - responsive sizing */}
         <div className="flex flex-row gap-2 sm:gap-3 items-center justify-center w-full mt-0">
-          {!showDoubleYes ? (
-            <>
-              {/* Yes Button */}
-              <motion.button
-                onClick={handleYesClick}
-                className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-4 sm:py-2.5 sm:px-7 rounded-full shadow-valentine relative overflow-hidden text-xs sm:text-base whitespace-nowrap"
-                style={{ transform: `scale(${yesScale})` }}
-                whileHover={{ scale: yesScale * 1.08 }}
-                whileTap={{ scale: yesScale * 0.95 }}
-              >
-                <span className="relative z-10">{content.yesButton}</span>
-              </motion.button>
+          {/* Yes Button */}
+          <motion.button
+            onClick={handleYesClick}
+            className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-4 sm:py-2.5 sm:px-7 rounded-full shadow-valentine relative overflow-hidden text-xs sm:text-base whitespace-nowrap"
+            style={{ transform: `scale(${yesScale})` }}
+            whileHover={{ scale: yesScale * 1.08 }}
+            whileTap={{ scale: yesScale * 0.95 }}
+          >
+            <span className="relative z-10">{content.yesButton}</span>
+          </motion.button>
 
-              {/* No Button - Disappears on 3rd escape */}
-              {showNoButton && (
-                <motion.button
-                  type="button"
-                  className="bg-muted text-muted-foreground font-bold py-1.5 px-4 sm:py-2 sm:px-5 rounded-full transition-all text-xs sm:text-sm whitespace-nowrap"
-                  style={{
-                    transform: `translate(${noPosition.x}px, ${noPosition.y}px)`,
-                  }}
-                  onMouseEnter={!isMobile ? moveNoButton : undefined}
-                  onTouchStart={isMobile ? moveNoButton : undefined}
-                  onClick={moveNoButton}
-                >
-                  <span>No 😢</span>
-                </motion.button>
-              )}
-            </>
-          ) : (
-            /* Double Yes Buttons */
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 200 }}
-              className="flex flex-row gap-2 sm:gap-3 justify-center items-center"
+          {/* No Button - moves on top of Yes after 3 clicks, clicking it = Yes */}
+          {showNoButton && (
+            <motion.button
+              type="button"
+              className="bg-muted text-muted-foreground font-bold py-1.5 px-4 sm:py-2 sm:px-5 rounded-full transition-all text-xs sm:text-sm whitespace-nowrap"
+              style={{
+                transform: `translate(${noPosition.x}px, ${noPosition.y}px)`,
+              }}
+              onMouseEnter={!isMobile ? moveNoButton : undefined}
+              onTouchStart={isMobile ? moveNoButton : undefined}
+              onClick={moveNoButton}
             >
-              <motion.button
-                onClick={handleYesClick}
-                className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-4 sm:py-2.5 sm:px-7 rounded-full shadow-valentine text-xs sm:text-base whitespace-nowrap"
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="relative z-10">{content.doubleYes[0]}</span>
-              </motion.button>
-              
-              <motion.button
-                onClick={handleYesClick}
-                className="bg-valentine-gradient text-primary-foreground font-bold py-1.5 px-4 sm:py-2.5 sm:px-7 rounded-full shadow-valentine text-xs sm:text-base whitespace-nowrap"
-                animate={{ y: [0, -4, 0] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="relative z-10">{content.doubleYes[1]}</span>
-              </motion.button>
-            </motion.div>
+              <span>No 😢</span>
+            </motion.button>
           )}
         </div>
 
         {/* Hint text */}
-        {escapeCount > 0 && escapeCount < 5 && (
+        {escapeCount > 0 && escapeCount < 4 && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-0.5 text-foreground text-center font-medium text-xs"
           >
             {content.hintText}
-          </motion.p>
-        )}
-
-        {showDoubleYes && (
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-1 text-foreground text-sm sm:text-base font-medium text-center px-2"
-          >
-            {content.noEscape.replace(/!/, `, ${displayName}!`)}
           </motion.p>
         )}
       </main>

@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useRef, useImperativeHandle, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX, Share2 } from 'lucide-react';
 
@@ -17,6 +17,21 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
     const audioRef = useRef<HTMLAudioElement>(null);
     const [isMuted, setIsMuted] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [showEntrance, setShowEntrance] = useState(false);
+    const [entranceComplete, setEntranceComplete] = useState(false);
+
+    // Show entrance animation when share button first appears
+    useEffect(() => {
+      if (showShareButton && !entranceComplete) {
+        setShowEntrance(true);
+        // After 3.5 seconds (text 2s + shrink/move 1.5s), hide entrance and show permanent button
+        const timer = setTimeout(() => {
+          setShowEntrance(false);
+          setEntranceComplete(true);
+        }, 3500);
+        return () => clearTimeout(timer);
+      }
+    }, [showShareButton, entranceComplete]);
 
     useImperativeHandle(ref, () => ({
       play: () => {
@@ -58,13 +73,84 @@ const ActionButtons = forwardRef<ActionButtonsHandle, ActionButtonsProps>(
           src="/audio/bg-music.mp3"
         />
 
-        {/* Share Button - Fixed top-right, eye-catching floating animation */}
+        {/* Share Button Entrance Animation - Center of screen with typewriter effect */}
         <AnimatePresence>
-          {showShareButton && (
+          {showShareButton && showEntrance && (
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+                className="flex flex-col items-center"
+              >
+                <motion.div
+                  className="bg-valentine-gradient text-primary-foreground px-8 py-6 rounded-full shadow-2xl flex flex-col items-center gap-4 pointer-events-auto cursor-pointer"
+                  onClick={onShareClick}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <motion.span
+                    className="text-5xl"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                  >
+                    <Share2 className="w-12 h-12" />
+                  </motion.span>
+                  
+                  {/* Typewriter text */}
+                  <motion.div className="text-center">
+                    <motion.h3
+                      className="text-xl sm:text-2xl font-bold"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.3, duration: 0.5 }}
+                    >
+                      <motion.span className="inline-block">
+                        {"You can also share this with someone".split('').map((char, i) => (
+                          <motion.span
+                            key={i}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4 + i * 0.04 }}
+                          >
+                            {char}
+                          </motion.span>
+                        ))}
+                      </motion.span>
+                    </motion.h3>
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+
+              {/* Animate out to corner after 2 seconds */}
+              <motion.div
+                className="fixed top-4 right-4 sm:top-6 sm:right-6 pointer-events-auto"
+                initial={{ opacity: 0, scale: 1, x: 0, y: 0 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  x: typeof window !== 'undefined' ? window.innerWidth / 2 - 100 : 0,
+                  y: typeof window !== 'undefined' ? window.innerHeight / 2 - 100 : 0,
+                }}
+                transition={{ delay: 2, duration: 0.8, ease: "easeInOut" }}
+              >
+                {/* This will be replaced by the permanent button */}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Share Button - Fixed top-right, permanent after entrance animation */}
+        <AnimatePresence>
+          {showShareButton && entranceComplete && (
             <motion.button
               onClick={onShareClick}
               className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-valentine-gradient text-primary-foreground px-4 py-2.5 sm:px-5 sm:py-3 rounded-full shadow-valentine flex items-center gap-2.5 font-bold text-sm sm:text-base"
-              initial={{ opacity: 0, scale: 0, y: -20 }}
+              initial={{ opacity: 0, scale: 0 }}
               animate={{
                 opacity: 1,
                 scale: 1,
