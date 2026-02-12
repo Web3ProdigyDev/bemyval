@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,25 +14,21 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/admin/verify-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ password }),
-      });
-
-      if (!response.ok) {
+      // Simple client-side password check
+      const correctPassword = 'iamgodwinhaha';
+      
+      if (password !== correctPassword) {
         throw new Error('Invalid password');
       }
 
-      const data = await response.json();
+      // Generate a simple token
+      const token = btoa(`admin-${Date.now()}`);
       
       // Store admin token in localStorage
-      localStorage.setItem('admin_token', data.token);
+      localStorage.setItem('admin_token', token);
       
       // Redirect to admin dashboard
-      router.push('/admin-dashboard');
+      navigate('/admin-dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
     } finally {
