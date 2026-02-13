@@ -94,7 +94,12 @@ export default function AdminDashboard() {
   const handleCreate = async () => {
     setSaving(true);
     try {
-      const { error } = await supabase.from('custom_wishes').insert([formData]);
+      if (!formData.title || !formData.subtitle || !formData.main_message || !formData.heart_message || !formData.love_message || !formData.footer_message || !formData.website_name) {
+        alert('Please fill in all fields');
+        setSaving(false);
+        return;
+      }
+      const { error } = await supabase.from('custom_wishes').insert([formData as CustomWish]);
       if (error) throw error;
       await loadWishes();
       setFormData({
